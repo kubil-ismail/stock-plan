@@ -1,166 +1,36 @@
-# 📈 Trading Decision Support App
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-Personal trading decision support application built for **discipline, risk control, and clarity** —  
-**not** for signals, predictions, or automation.
+## Getting Started
 
----
+First, run the development server:
 
-## 🎯 Goal
-- Reduce emotional trading
-- Enforce TP / CL discipline
-- Improve risk–reward awareness
-- Build consistent trading habits through structure
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
----
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 👤 Target User
-- Single user (personal dogfooding)
-- Beginner–intermediate trader
-- Manual trading only
-- Testing period: **minimum 6 months**
+You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
----
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## 🧱 Product Principles
-- Guardrails > predictions
-- User decides, system calculates
-- No feature without real usage
-- Cut features aggressively if unused
+## Learn More
 
----
+To learn more about Next.js, take a look at the following resources:
 
-# 🗓️ 6-Month Feature Timeline
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
----
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## 🟢 Phase 1 — Core Discipline (Month 0–2)
+## Deploy on Vercel
 
-### 🎨 Frontend (FE)
-- Trade entry form
-  - Entry price
-  - Capital used
-  - Risk % per trade
-- Take Profit & Cut Loss calculator UI
-- Risk–Reward (R:R) visualization
-- Profit & loss simulator
-- AVG impact simulator (before trade execution)
-- Mandatory trade notes (reason, setup)
-- Simple trade journal (list & detail view)
-- Basic dashboard (open vs closed trades)
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### ⚙️ Backend (BE)
-- Trade CRUD API
-- Risk calculation service
-- TP / CL computation logic
-- PostgreSQL schema:
-  - trades
-  - trade_notes
-- Validation rules:
-  - Trade must include TP & CL
-- Single-user authentication
-- Daily snapshot for open positions
-
-### ✅ Exit Criteria
-- All trades must be recorded through the app
-- No trade without TP / CL
-- App used daily during trading days
-
----
-
-## 🟡 Phase 2 — Decision Context (Month 3–4)
-
-### 🎨 Frontend (FE)
-- Valuation **range** display:
-  - Conservative
-  - Base
-  - Optimistic
-- Assumption selector:
-  - PE-based
-  - PBV-based
-  - Growth-based
-- Conglomerate mapping (read-only)
-- Affiliated stock list per conglomerate
-- Performance comparison per stock
-- Weight visualization (market cap / revenue)
-
-### ⚙️ Backend (BE)
-- Valuation range engine (no single fair price)
-- Assumption configuration storage
-- Conglomerate–company relationship schema
-- Aggregation & weighting logic
-- Cached valuation results
-- Read-only valuation endpoints
-
-### ⚠️ Guardrails
-- No “buy”, “sell”, or “target price”
-- Valuation always shown as a **range**
-- Conglomerate average labeled as **context only**
-
----
-
-## 🔵 Phase 3 — Review & Pruning (Month 5–6)
-
-### 🎨 Frontend (FE)
-- Trade performance dashboard
-- Drawdown & recovery visualization
-- Feature usage indicators
-- Blocked / cancelled trade history
-- Reflection & review notes UI
-- Data export (CSV / JSON)
-
-### ⚙️ Backend (BE)
-- Trade analytics service
-- Drawdown calculation logic
-- Feature usage tracking
-- Performance comparison:
-  - Before app
-  - After app
-- Export endpoints
-
-### 🧹 Feature Decision Rules
-- **KEEP** → used ≥ 3× per week
-- **MODIFY** → used but often skipped
-- **REMOVE** → rarely or never used
-
----
-
-# 📊 Personal Success Metrics
-- % of trades with TP & CL
-- Average risk per trade
-- Average Risk–Reward ratio
-- Max drawdown trend
-- Number of cancelled trades after simulation
-- Emotional override frequency
-
----
-
-# 🚫 Explicit Non-Goals
-- No auto trading
-- No buy/sell signals
-- No AI price prediction
-- No real-time execution
-- No social features or leaderboards
-
----
-
-# 🛠️ Tech Stack
-
-### Frontend
-- React / Next.js
-- TypeScript
-- Redux Toolkit or Zustand
-- TradingView Chart (embed)
-
-### Backend
-- Node.js
-- Express
-- PostgreSQL
-- Cron jobs (daily snapshots)
-
----
-
-## 📌 Final Note
-> This app succeeds when it prevents bad trades,  
-> not when it encourages more trades.
-
-Any feature that increases emotional trading will be removed.
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
