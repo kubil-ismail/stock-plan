@@ -28,6 +28,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(dashboardUrl);
   }
 
+  if (!token && pathname === "/") {
+    const dashboardUrl = new URL("/auth/login", request.url);
+    return NextResponse.redirect(dashboardUrl);
+  }
+
   return NextResponse.next();
 }
 
