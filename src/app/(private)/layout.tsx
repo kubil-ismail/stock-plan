@@ -9,16 +9,35 @@ import {
   LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
+  const pathname = usePathname();
+
   const navItems = [
-    { id: "dashboard" as const, label: "Dashboard", icon: LayoutDashboard },
-    { id: "setups" as const, label: "Trading Setups", icon: Target },
-    { id: "plans" as const, label: "Trade Plans", icon: FileText },
+    {
+      id: "dashboard" as const,
+      href: "/dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      id: "setups" as const,
+      href: "/trading-setups",
+      label: "Trading Setups",
+      icon: Target,
+    },
+    {
+      id: "plans" as const,
+      href: "/trading-plans",
+      label: "Trade Plans",
+      icon: FileText,
+    },
   ];
 
   return (
@@ -29,31 +48,34 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               {/* Logo */}
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-5 h-5 text-primary-foreground" />
+              <Link href="/">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                    <TrendingUp className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                  <span className="text-xl text-foreground">StockPlan</span>
                 </div>
-                <span className="text-xl text-foreground">StockPlan</span>
-              </div>
+              </Link>
 
               {/* Navigation Links */}
               <div className="hidden md:flex items-center gap-1">
                 {navItems.map((item) => {
                   const Icon = item.icon;
-                  const isActive = false;
+                  const isActive = pathname === item.href;
                   return (
-                    <button
-                      key={item.id}
-                      onClick={() => {}}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors ${
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                      }`}
-                    >
-                      <Icon className="w-4 h-4" />
-                      <span className="text-sm">{item.label}</span>
-                    </button>
+                    <Link key={item.id} href={item.href}>
+                      <button
+                        onClick={() => {}}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors cursor-pointer hover:bg-muted ${
+                          isActive
+                            ? "text-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        <span className="text-sm">{item.label}</span>
+                      </button>
+                    </Link>
                   );
                 })}
               </div>

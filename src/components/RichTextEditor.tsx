@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
-import "react-quill/dist/quill.snow.css";
+// import "react-quill/dist/quill.snow.css";
 
 interface RichTextEditorProps {
   value: string;
