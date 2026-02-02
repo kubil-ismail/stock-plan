@@ -25,8 +25,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
-import { RichTextEditor } from "@/components/RichTextEditor";
 import type { TradePlan } from "@/types";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function PlansPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

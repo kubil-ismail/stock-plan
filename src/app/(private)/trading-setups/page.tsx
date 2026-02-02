@@ -27,8 +27,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RichTextEditor } from "@/components/RichTextEditor";
 import type { TradingSetup } from "@/types";
+import dynamic from "next/dynamic";
+
+const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function Page() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

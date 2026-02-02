@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
 import "react-quill/dist/quill.snow.css";
 
@@ -11,12 +11,13 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-export function RichTextEditor({
+export default function RichTextEditor({
   value,
   onChange,
   placeholder,
   className,
 }: RichTextEditorProps) {
+
   const modules = useMemo(
     () => ({
       toolbar: [
@@ -62,7 +63,15 @@ export function RichTextEditor({
           border-bottom-left-radius: 0.375rem;
           border-bottom-right-radius: 0.375rem;
           border-color: rgba(0, 0, 0, 0.08);
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          font <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={onChange}
+          modules={modules}
+          formats={formats}
+          placeholder={placeholder}
+          className="bg-white rounded-md border border-border"
+        />-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
         .ql-editor {
           min-height: 200px;
