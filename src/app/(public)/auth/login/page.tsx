@@ -12,24 +12,36 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Spinner } from "@/components/ui/spinner";
+import Link from "next/link";
+import http from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
-interface LoginPageProps {
-  onNavigateToRegister: () => void;
-}
-
-export default function Page({ onNavigateToRegister }: LoginPageProps) {
+export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const router = useRouter();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+
+    const request = await http.post("http://localhost:3003/v1/auth/login", {
+      email: email,
+      password: password,
+    });
+
+    Cookies.set("token", request.data.data.token);
+
+    router.replace("/dashboard");
     try {
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
@@ -80,19 +92,21 @@ export default function Page({ onNavigateToRegister }: LoginPageProps) {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Spinner data-icon="inline-start" />}
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
               <div className="text-center text-sm">
                 <span className="text-muted-foreground">
                   Don&apos;t have an account?{" "}
                 </span>
-                <button
-                  type="button"
-                  onClick={onNavigateToRegister}
-                  className="text-primary hover:underline"
-                >
-                  Register
-                </button>
+                <Link href="/auth/register" passHref>
+                  <button
+                    type="button"
+                    className="text-primary hover:underline cursor-pointer"
+                  >
+                    Register
+                  </button>
+                </Link>
               </div>
             </form>
           </CardContent>

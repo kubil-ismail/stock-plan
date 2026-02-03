@@ -12,18 +12,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
+import http from "axios";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
-interface RegisterPageProps {
-  onNavigateToLogin: () => void;
-}
-
-export default function Page({ onNavigateToLogin }: RegisterPageProps) {
+export default function Page() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,9 +38,24 @@ export default function Page({ onNavigateToLogin }: RegisterPageProps) {
     }
 
     setIsLoading(true);
+
     try {
+      const request = await http.post(
+        "http://localhost:3003/v1/auth/register",
+        {
+          fullname: name,
+          email: email,
+          password: password,
+        }
+      );
+
+      Cookies.set("token", request.data.data.token);
+
+      router.replace("/dashboard");
     } catch (error) {
+      console.log(error);
       console.error("Registration failed:", error);
+
       setError("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
@@ -114,19 +132,21 @@ export default function Page({ onNavigateToLogin }: RegisterPageProps) {
               </div>
               {error && <div className="text-sm text-destructive">{error}</div>}
               <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading && <Spinner />}
                 {isLoading ? "Creating Account..." : "Create Account"}
               </Button>
               <div className="text-center text-sm">
                 <span className="text-muted-foreground">
                   Already have an account?{" "}
                 </span>
-                <button
-                  type="button"
-                  onClick={onNavigateToLogin}
-                  className="text-primary hover:underline"
-                >
-                  Login
-                </button>
+                <Link href="/auth/login">
+                  <button
+                    type="button"
+                    className="text-primary hover:underline cursor-pointer"
+                  >
+                    Login
+                  </button>
+                </Link>
               </div>
             </form>
           </CardContent>

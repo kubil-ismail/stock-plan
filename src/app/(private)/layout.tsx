@@ -48,7 +48,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-8">
               {/* Logo */}
-              <Link href="/">
+              <Link href="/" passHref>
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                     <TrendingUp className="w-5 h-5 text-primary-foreground" />
@@ -63,7 +63,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   const Icon = item.icon;
                   const isActive = pathname === item.href;
                   return (
-                    <Link key={item.id} href={item.href}>
+                    <Link key={item.id} href={item.href} passHref>
                       <button
                         onClick={() => {}}
                         className={`flex items-center gap-2 px-4 py-2 rounded-md transition-colors cursor-pointer hover:bg-muted ${
