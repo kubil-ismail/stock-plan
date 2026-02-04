@@ -14,34 +14,37 @@ import {
 } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import Link from "next/link";
-import http from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
-    const request = await http.post("http://localhost:3003/v1/auth/login", {
-      email: email,
-      password: password,
-    });
-
-    Cookies.set("token", request.data.data.token);
-
-    router.replace("/dashboard");
     try {
-    } catch (error) {
-      console.error("Login failed:", error);
+      const request = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (request.status !== 200) {
+        throw Error("failed");
+      }
+
+      router.replace("/dashboard");
+    } catch {
+      setError("Incorrect email or password");
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -91,6 +94,7 @@ export default function Page() {
                   required
                 />
               </div>
+              {error && <div className="text-sm text-destructive">{error}</div>}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Spinner data-icon="inline-start" />}
                 {isLoading ? "Logging in..." : "Login"}

@@ -27,6 +27,7 @@ import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import type { TradePlan } from "@/types";
 import dynamic from "next/dynamic";
+import "@/styles/quill.min.css";
 
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   loading: () => <p>Loading...</p>,

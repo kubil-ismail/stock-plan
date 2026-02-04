@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import {
   LayoutDashboard,
   Target,
@@ -11,9 +11,41 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useGetProfileQuery } from "@/services/auth";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MainLayoutProps {
   children: React.ReactNode;
+}
+
+function UserMenu() {
+  const { data, isLoading } = useGetProfileQuery(undefined, {
+    skip: typeof window === "undefined",
+  });
+
+  return (
+    <div className="flex items-center gap-4">
+      <div className="text-right hidden sm:block">
+        {isLoading || !data ? (
+          <div className="flex flex-col items-end">
+            <Skeleton className="h-3 mb-1 w-[60px]" />
+            <Skeleton className="h-3 w-[80px]" />
+          </div>
+        ) : (
+          <>
+            <p className="text-sm text-foreground">{data?.fullname}</p>
+            <p className="text-xs text-muted-foreground">{data?.email}</p>
+          </>
+        )}
+      </div>
+      <Link href="/auth/logout" passHref>
+        <Button variant="outline" size="sm" className="cursor-pointer">
+          <LogOut className="w-4 h-4 mr-2" />
+          Logout
+        </Button>
+      </Link>
+    </div>
+  );
 }
 
 export default function MainLayout({ children }: MainLayoutProps) {
@@ -82,16 +114,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             </div>
 
             {/* User Menu */}
-            <div className="flex items-center gap-4">
-              <div className="text-right hidden sm:block">
-                <p className="text-sm text-foreground">{"user?.name"}</p>
-                <p className="text-xs text-muted-foreground">{"user?.email"}</p>
-              </div>
-              <Button variant="outline" size="sm" onClick={() => {}}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
-            </div>
+            <UserMenu />
           </div>
         </div>
       </nav>

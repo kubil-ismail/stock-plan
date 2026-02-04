@@ -1,23 +1,26 @@
 "use client";
 
-import React from "react";
-import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { SpinnerBox } from "@/components/Loading";
+import { useRouter } from "next/navigation";
 
 function Page() {
   const router = useRouter();
 
-  React.useEffect(() => {
-    localStorage.clear();
+  useEffect(() => {
+    const logout = async () => {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+      });
 
-    Cookies.remove("token");
+      router.replace("/auth/login");
+    };
 
-    router.refresh();
-  }, []);
+    logout();
+  }, [router]);
 
   return (
-    <div className="h-screen flex items-center">
+    <div className="h-screen flex items-center justify-center">
       <SpinnerBox />
     </div>
   );

@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import ReactQuill from "react-quill-new";
-// import "react-quill/dist/quill.snow.css";
+import "@/styles/quill.min.css";
 
 interface RichTextEditorProps {
   value: string;
@@ -48,7 +48,6 @@ export default function RichTextEditor({
         value={value}
         onChange={onChange}
         modules={modules}
-        formats={formats}
         placeholder={placeholder}
         className="bg-white rounded-md border border-border"
       />

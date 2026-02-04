@@ -4,15 +4,6 @@ export interface User {
   email: string;
 }
 
-export interface TradingSetup {
-  id: string;
-  name: string;
-  description: string;
-  timeframe: "Daily" | "Weekly" | "4H" | "1H";
-  script: string; // HTML content from WYSIWYG editor
-  createdAt: string;
-}
-
 export interface TradePlan {
   id: string;
   ticker: string;
@@ -35,4 +26,38 @@ export interface DashboardStats {
   totalSetups: number;
   totalInvested: number;
   winRatio: number;
+}
+
+export interface Profile {
+  id: number;
+  fullname: string;
+  email: string;
+  // tambah field lain kalau ada
+}
+
+export interface Response<T> {
+  status: boolean;
+  message: string;
+  data: T;
+}
+
+export interface TradingSetup {
+  id: number;
+  setup_slug: string;
+  name: string;
+  description: string;
+  timeframe: "DAILY" | "WEEKLY" | "MONTHLY" | 'YEARLY'; // bisa ditambah kalau ada
+}
+
+export interface PaginationOptions {
+  page: number | null;
+  limit: number | null;
+  total: number;
+}
+
+export interface ApiResponse<T> {
+  status: boolean;
+  message?: string;
+  data: T;
+  options?: PaginationOptions;
 }

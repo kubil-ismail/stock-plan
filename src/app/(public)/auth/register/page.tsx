@@ -14,8 +14,6 @@ import {
 } from "@/components/ui/card";
 import Link from "next/link";
 import { Spinner } from "@/components/ui/spinner";
-import http from "axios";
-import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -40,22 +38,22 @@ export default function Page() {
     setIsLoading(true);
 
     try {
-      const request = await http.post(
-        "http://localhost:3003/v1/auth/register",
-        {
+      const request = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           fullname: name,
           email: email,
           password: password,
-        }
-      );
+        }),
+      });
 
-      Cookies.set("token", request.data.data.token);
+      if (request.status !== 200) {
+        throw Error("failed");
+      }
 
       router.replace("/dashboard");
-    } catch (error) {
-      console.log(error);
-      console.error("Registration failed:", error);
-
+    } catch {
       setError("Registration failed. Please try again.");
     } finally {
       setIsLoading(false);

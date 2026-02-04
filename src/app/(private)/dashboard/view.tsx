@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   FileText,
@@ -9,7 +11,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { SpinnerBox, SpinnerLoading } from "@/components/Loading";
+import { SpinnerBox } from "@/components/Loading";
 
 export default function View({ loading }: { loading?: boolean }) {
   const plans: any = [];
@@ -217,10 +219,7 @@ export default function View({ loading }: { loading?: boolean }) {
               <tbody>
                 {loading ? (
                   <tr>
-                    <td
-                      colSpan={5}
-                      className="text-center py-8"
-                    >
+                    <td colSpan={5} className="text-center py-8">
                       <SpinnerBox />
                     </td>
                   </tr>
