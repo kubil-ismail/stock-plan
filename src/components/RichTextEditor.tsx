@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
+import { useMemo } from "react";
 import ReactQuill from "react-quill-new";
 import "@/styles/quill.min.css";
 
@@ -17,7 +17,6 @@ export default function RichTextEditor({
   placeholder,
   className,
 }: RichTextEditorProps) {
-
   const modules = useMemo(
     () => ({
       toolbar: [
@@ -30,16 +29,6 @@ export default function RichTextEditor({
     }),
     []
   );
-
-  const formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "list",
-    "bullet",
-    "link",
-  ];
 
   return (
     <div className={className}>

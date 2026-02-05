@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { revalidateTag } from "next/cache";
 
 export async function GET(req: Request) {
   const cookieStore = await cookies();
@@ -63,8 +62,6 @@ export async function POST(req: Request) {
       { status: res.status }
     );
   }
-
-  revalidateTag("get-trading-setup", "max");
 
   return Response.json(data);
 }

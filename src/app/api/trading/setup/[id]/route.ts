@@ -28,6 +28,45 @@ export async function GET(
   return Response.json(data);
 }
 
+export async function PATCH(
+  req: Request,
+  ctx: RouteContext<"/api/trading/setup/[id]">
+) {
+  const cookieStore = await cookies();
+  const token =
+    cookieStore.get("token")?.value ?? req.headers.get("authorization");
+
+  const body = await req.json();
+
+  const { id } = await ctx.params;
+
+  const res = await fetch(`http://localhost:3003/v1/trading/setup/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      name: body.name,
+      description: body.description,
+      timeframe: body.timeframe,
+      script: body.script,
+    }),
+  });
+
+  const data = await res.json();
+
+  // ❌ backend error lain
+  if (!res.ok) {
+    return Response.json(
+      { success: false, message: data?.message ?? "failed", data: null },
+      { status: res.status }
+    );
+  }
+
+  return Response.json(data);
+}
+
 export async function DELETE(
   _req: Request,
   ctx: RouteContext<"/api/trading/setup/[id]">

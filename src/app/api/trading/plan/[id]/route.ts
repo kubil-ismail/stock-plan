@@ -7,16 +7,6 @@ export async function GET(
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
-  // 🚫 token gak ada
-  if (!token) {
-    cookieStore.delete("token");
-
-    return Response.json(
-      { success: false, message: "unauthorized", data: null },
-      { status: 401 }
-    );
-  }
-
   const { id } = await ctx.params;
 
   const res = await fetch(`http://localhost:3003/v1/trading/plan/${id}`, {
@@ -24,16 +14,6 @@ export async function GET(
       Authorization: `Bearer ${token}`,
     },
   });
-
-  // 🔥 token invalid / expired
-  if (res.status === 401) {
-    cookieStore.delete("token");
-
-    return Response.json(
-      { success: false, message: "session expired", data: null },
-      { status: 401 }
-    );
-  }
 
   // ❌ backend error lain
   if (!res.ok) {

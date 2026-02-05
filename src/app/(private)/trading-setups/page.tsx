@@ -4,7 +4,6 @@ import { ApiResponse, TradingSetup } from "@/types/index";
 
 async function Page(req) {
   const searchParams = await req.searchParams;
-  console.log(searchParams);
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 

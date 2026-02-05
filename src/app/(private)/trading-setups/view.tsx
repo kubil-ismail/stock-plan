@@ -64,14 +64,25 @@ export default function View({
 
   const handleOpenDialog = (setup?: TradingSetup) => {
     setIsDialogOpen(true);
-
     handleClearForm();
+
+    if (setup?.name) {
+      setEditingSetup(setup);
+
+      setFormData({
+        name: setup.name,
+        description: setup.description,
+        timeframe: setup.timeframe,
+        script: setup.script,
+      });
+    }
   };
 
   const handleClearForm = () => {
     setError("");
     setErrorUnique("");
     setIsSubmit(false);
+    setEditingSetup(null);
     setFormData({
       name: "",
       description: "",
@@ -85,26 +96,51 @@ export default function View({
 
     try {
       setIsSubmit(true);
-      const request = await fetch("/api/trading/setup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
 
-      if (request.status !== 200) {
-        const { message } = await request?.json();
+      if (editingSetup) {
+        const request = await fetch(`/api/trading/setup/${editingSetup.id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
 
-        if (
-          ["Setup name already exist", "setup_slug must be unique"].includes(
-            message
-          )
-        ) {
-          setErrorUnique("Setup name already exist");
-        } else {
-          setError(message);
+        if (request.status !== 200) {
+          const { message } = await request?.json();
+
+          if (
+            ["Setup name already exist", "setup_slug must be unique"].includes(
+              message
+            )
+          ) {
+            setErrorUnique("Setup name already exist");
+          } else {
+            setError(message);
+          }
+
+          throw Error(message);
         }
+      } else {
+        const request = await fetch("/api/trading/setup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
 
-        throw Error(message);
+        if (request.status !== 200) {
+          const { message } = await request?.json();
+
+          if (
+            ["Setup name already exist", "setup_slug must be unique"].includes(
+              message
+            )
+          ) {
+            setErrorUnique("Setup name already exist");
+          } else {
+            setError(message);
+          }
+
+          throw Error(message);
+        }
       }
 
       router.refresh();
@@ -136,7 +172,7 @@ export default function View({
           </p>
         </div>
 
-        <div className="flex gap-[10px]">
+        <div className="flex items-center gap-[10px]">
           <TradingSearch total={list?.options?.total ?? 0} />
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -301,7 +337,7 @@ export default function View({
                     <Button
                       variant="ghost"
                       size="sm"
-                      // onClick={() => handleOpenDialog(setup)}
+                      onClick={() => handleOpenDialog(setup)}
                       className="hover:bg-muted"
                     >
                       <Edit2 className="h-4 w-4" />

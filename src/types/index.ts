@@ -4,17 +4,20 @@ export interface User {
   email: string;
 }
 
-export interface TradePlan {
+export interface Psychology {
+  emotion_state: string;
+  confidence_score: number;
+}
+
+export interface TradingPlan {
   id: string;
   ticker: string;
-  setupId: string;
-  setupName: string;
-  entryPrice: number;
-  entryDate: string;
-  entryReason: string;
-  riskNote: string;
-  confidenceScore: number; // 1-10
-  emotionState: string;
+  setup: string;
+  entry_price: number;
+  entry_reason: string;
+  risk_note: string;
+  entry_date: string;
+  psychology: Psychology;
   script: string; // HTML content from WYSIWYG editor (pre-filled from setup)
   status: "Planned" | "Active" | "Closed" | "Archive";
   createdAt: string;
@@ -46,7 +49,8 @@ export interface TradingSetup {
   setup_slug: string;
   name: string;
   description: string;
-  timeframe: "DAILY" | "WEEKLY" | "MONTHLY" | 'YEARLY'; // bisa ditambah kalau ada
+  timeframe: "DAILY" | "WEEKLY" | "MONTHLY" | "YEARLY"; // bisa ditambah kalau ada
+  script: string;
 }
 
 export interface PaginationOptions {

@@ -2,40 +2,23 @@ import { cookies } from "next/headers";
 
 export async function GET(req: Request) {
   const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  // 🚫 token gak ada
-  if (!token) {
-    cookieStore.delete("token");
-
-    return Response.json(
-      { success: false, message: "unauthorized", data: null },
-      { status: 401 }
-    );
-  }
+  const token =
+    cookieStore.get("token")?.value ?? req.headers.get("authorization");
 
   const { searchParams } = new URL(req.url);
   const page = searchParams.get("page") ?? "1";
   const limit = searchParams.get("limit") ?? "10";
+  const sort = searchParams.get("sort") ?? "id:desc";
+  const search = searchParams.get("search") ?? "";
 
   const res = await fetch(
-    `http://localhost:3003/v1/trading/plan?page=${page}&limit=${limit}`,
+    `http://localhost:3003/v1/trading/plan?page=${page}&limit=${limit}&sort=${sort}&search=${search}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
-
-  // 🔥 token invalid / expired
-  if (res.status === 401) {
-    cookieStore.delete("token");
-
-    return Response.json(
-      { success: false, message: "session expired", data: null },
-      { status: 401 }
-    );
-  }
 
   // ❌ backend error lain
   if (!res.ok) {
