@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useMemo } from "react";
 import ReactQuill from "react-quill-new";
 import "@/styles/quill.min.css";

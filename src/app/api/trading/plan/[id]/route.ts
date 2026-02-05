@@ -9,7 +9,7 @@ export async function GET(
 
   const { id } = await ctx.params;
 
-  const res = await fetch(`http://localhost:3003/v1/trading/plan/${id}`, {
+  const res = await fetch(`http://localhost:8000/v1/trading/plan/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

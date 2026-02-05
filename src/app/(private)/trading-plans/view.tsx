@@ -35,6 +35,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { getNextSort } from "@/lib/utils";
 import { TradingSearch } from "@/components/Search";
 import { Badge } from "@/components/ui/badge";
+import { ComboboxBasic } from "@/components/Combobox";
 
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   loading: () => <p>Loading...</p>,
@@ -300,7 +301,7 @@ export default function View({
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="ticker">Ticker Symbol *</Label>
-                      <Input
+                      {/* <Input
                         id="ticker"
                         value={formData.ticker}
                         onChange={(e) =>
@@ -311,25 +312,12 @@ export default function View({
                         }
                         placeholder="e.g., AAPL"
                         required
-                      />
+                      /> */}
+                      <ComboboxBasic />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="setup">Setup *</Label>
-                      <Select
-                        value={formData.setupId}
-                        onValueChange={handleSetupChange}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a setup" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {setups.map((setup) => (
-                            <SelectItem key={setup.id} value={setup.id}>
-                              {setup.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <ComboboxBasic />
                     </div>
                   </div>
 

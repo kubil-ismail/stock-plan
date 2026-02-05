@@ -9,7 +9,7 @@ export async function GET(
 
   const { id } = await ctx.params;
 
-  const res = await fetch(`http://localhost:3003/v1/trading/setup/${id}`, {
+  const res = await fetch(`http://localhost:8000/v1/trading/setup/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -40,7 +40,7 @@ export async function PATCH(
 
   const { id } = await ctx.params;
 
-  const res = await fetch(`http://localhost:3003/v1/trading/setup/${id}`, {
+  const res = await fetch(`http://localhost:8000/v1/trading/setup/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -76,7 +76,7 @@ export async function DELETE(
 
   const { id } = await ctx.params;
 
-  const res = await fetch(`http://localhost:3003/v1/trading/setup/${id}`, {
+  const res = await fetch(`http://localhost:8000/v1/trading/setup/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,

@@ -12,7 +12,7 @@ export async function GET(req: Request) {
   const search = searchParams.get("search") ?? "";
 
   const res = await fetch(
-    `http://localhost:3003/v1/trading/plan?page=${page}&limit=${limit}&sort=${sort}&search=${search}`,
+    `http://localhost:8000/v1/trading/plan?page=${page}&limit=${limit}&sort=${sort}&search=${search}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

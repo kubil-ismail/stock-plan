@@ -15,7 +15,7 @@ export async function GET() {
       );
     }
 
-    const res = await fetch("http://localhost:3003/v1/auth/profile", {
+    const res = await fetch("http://localhost:8000/v1/auth/profile", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

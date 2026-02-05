@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Plus, Edit2, Trash2, Clock, FileText } from "lucide-react";
+import { Edit2, Trash2, Clock, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -9,36 +9,12 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { TradingPagination } from "@/components/Pagination";
-import dynamic from "next/dynamic";
 import { ApiResponse, TradingSetup } from "@/types/index";
 import { SpinnerBox } from "@/components/Loading";
-import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
 import { TradingSearch } from "@/components/Search";
-
-const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
-  loading: () => <p>Loading...</p>,
-});
+import Setup_Form from "./_form/_Setup.form";
 
 export default function View({
   loading,
@@ -174,126 +150,19 @@ export default function View({
 
         <div className="flex items-center gap-[10px]">
           <TradingSearch total={list?.options?.total ?? 0} />
-
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => handleOpenDialog()}>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Setup
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>
-                  {editingSetup ? "Edit Setup" : "Add New Setup"}
-                </DialogTitle>
-                <DialogDescription>
-                  Define a reusable trading strategy with rules and checklist
-                </DialogDescription>
-              </DialogHeader>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">
-                      Setup Name<span className="text-[red]">*</span>
-                    </Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => {
-                        setFormData({ ...formData, name: e.target.value });
-                        setErrorUnique("");
-                      }}
-                      placeholder="e.g., Breakout Strategy"
-                      className={cn(errorUnique ? "border-[red]" : "")}
-                      required
-                    />
-
-                    {errorUnique && (
-                      <div className="text-sm text-destructive">
-                        {errorUnique}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="timeframe">
-                      Timeframe <span className="text-[red]">*</span>
-                    </Label>
-                    <Select
-                      value={formData.timeframe}
-                      onValueChange={(value) =>
-                        setFormData({
-                          ...formData,
-                          timeframe: value as TradingSetup["timeframe"],
-                        })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="DAILY">Daily</SelectItem>
-                        <SelectItem value="WEEKLY">Weekly</SelectItem>
-                        <SelectItem value="QUARTERLY">Quartterly</SelectItem>
-                        <SelectItem value="YEARLY">Yearly</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) =>
-                      setFormData({ ...formData, description: e.target.value })
-                    }
-                    placeholder="Brief description of the setup"
-                    rows={2}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Script (Trading Rules & Checklist)</Label>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Document your entry rules, exit strategy, and risk
-                    management checklist
-                  </p>
-                  <RichTextEditor
-                    value={formData.script}
-                    onChange={(value) =>
-                      setFormData({ ...formData, script: value })
-                    }
-                    placeholder="Define your trading rules, entry criteria, exit strategy..."
-                  />
-                </div>
-
-                {error && (
-                  <div className="text-sm text-destructive">{error}</div>
-                )}
-
-                <div className="flex gap-3 justify-end pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={isSubmit}>
-                    {isSubmit && <Spinner data-icon="inline-start" />}
-                    {editingSetup
-                      ? "Update Setup"
-                      : isSubmit
-                      ? "Create Setup..."
-                      : "Create Setup"}
-                  </Button>
-                </div>
-              </form>
-            </DialogContent>
-          </Dialog>
+          <Setup_Form
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+            handleOpenDialog={handleOpenDialog}
+            editingSetup={editingSetup}
+            handleSubmit={handleSubmit}
+            isSubmit={isSubmit}
+            error={error}
+            formData={formData}
+            errorUnique={errorUnique}
+            setFormData={setFormData}
+            setErrorUnique={setErrorUnique}
+          />
         </div>
       </div>
 
