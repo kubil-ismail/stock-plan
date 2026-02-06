@@ -9,10 +9,15 @@ export interface Psychology {
   confidence_score: number;
 }
 
+interface SetupTradingPlan {
+  name: string;
+  setup_slug: string
+}
+
 export interface TradingPlan {
   id: string;
   ticker: string;
-  setup: string;
+  m_trading_setup: SetupTradingPlan;
   entry_price: number;
   entry_reason: string;
   risk_note: string;
@@ -64,4 +69,17 @@ export interface ApiResponse<T> {
   message?: string;
   data: T;
   options?: PaginationOptions;
+}
+
+export interface ListCompanies {
+  id: number;
+  ticker: string;
+  name: string;
+}
+
+export interface ListSetup {
+  id: number;
+  setup_slug: string;
+  name: string;
+  script: string;
 }

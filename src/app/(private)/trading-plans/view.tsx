@@ -25,7 +25,12 @@ import {
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
-import type { ApiResponse, TradingPlan } from "@/types";
+import type {
+  ApiResponse,
+  ListCompanies,
+  ListSetup,
+  TradingPlan,
+} from "@/types";
 import dynamic from "next/dynamic";
 import "@/styles/quill.min.css";
 import { TradingPagination } from "@/components/Pagination";
@@ -35,7 +40,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { getNextSort } from "@/lib/utils";
 import { TradingSearch } from "@/components/Search";
 import { Badge } from "@/components/ui/badge";
-import { ComboboxBasic } from "@/components/Combobox";
+import { Setup_Form_Readonly } from "../trading-setups/_form/_Setup.form";
+import { DatePickerNaturalLanguage } from "@/components/Datepicker";
+import { Spinner } from "@/components/ui/spinner";
+import Ticker_Form_Readonly from "./_form/_Ticker.form";
 
 const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
   loading: () => <p>Loading...</p>,
@@ -44,26 +52,32 @@ const RichTextEditor = dynamic(() => import("@/components/RichTextEditor"), {
 export default function View({
   loading,
   list,
+  companies,
+  setup,
 }: {
   loading?: boolean;
   list: ApiResponse<TradingPlan[]>;
+  companies: ApiResponse<ListCompanies[]>;
+  setup: ApiResponse<ListSetup[]>;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentSort = searchParams.get("sort");
-  const setups: any = [];
 
+  const [isSubmit, setIsSubmit] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogTicker, setIsDialogTicker] = useState<string | null>(null);
+  const [isDialogSetup, setIsDialogSetup] = useState<string | null>(null);
   const [editingPlan, setEditingPlan] = useState<TradingPlan | null>(null);
   const [sortField, sortDir] = currentSort?.split(":") ?? [];
 
   const [formData, setFormData] = useState({
     ticker: "",
-    setupId: "",
-    entryPrice: 0,
-    entryDate: new Date().toISOString().split("T")[0],
-    entryReason: "",
-    riskNote: "",
+    setup: "",
+    entry_price: 0,
+    entry_date: new Date().toISOString().split("T")[0],
+    entry_reason: "",
+    risk_note: "",
     confidenceScore: 5,
     emotionState: "Calm and focused",
     script: "",
@@ -81,75 +95,41 @@ export default function View({
     "Revenge trading urge",
   ];
 
-  const handleOpenDialog = (plan?: TradingPlan) => {
-    if (plan) {
-      setEditingPlan(plan);
-      // setFormData({
-      //   ticker: plan.ticker,
-      //   setupId: plan.setupId,
-      //   entryPrice: plan.entryPrice,
-      //   entryDate: plan.entryDate.split("T")[0],
-      //   entryReason: plan.entryReason,
-      //   riskNote: plan.riskNote,
-      //   confidenceScore: plan.confidenceScore,
-      //   emotionState: plan.emotionState,
-      //   script: plan.script,
-      //   status: plan.status,
-      // });
-    } else {
-      setEditingPlan(null);
-      const selectedSetup = setups.find(
-        (s: any) => s.id === (setups[0]?.id || "")
-      );
-      setFormData({
-        ticker: "",
-        setupId: setups[0]?.id || "",
-        entryPrice: 0,
-        entryDate: new Date().toISOString().split("T")[0],
-        entryReason: "",
-        riskNote: "",
-        confidenceScore: 5,
-        emotionState: "Calm and focused",
-        script: selectedSetup?.script || "",
-        status: "Planned",
-      });
-    }
-    setIsDialogOpen(true);
-  };
-
-  const handleSetupChange = (setupId: string) => {
-    const setup = setups.find((s) => s.id === setupId);
-    setFormData({
-      ...formData,
-      setupId,
-      script: setup?.script || "",
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
+    setIsSubmit(true);
 
-    const setup = setups.find((s) => s.id === formData.setupId);
-    if (!setup) return;
-
-    const planData = {
-      ...formData,
-      setupName: setup.name,
-      entryDate: new Date(formData.entryDate).toISOString(),
-    };
-
-    if (editingPlan) {
-      //   updatePlan(editingPlan.id, planData);
-    } else {
-      //   addPlan(planData);
-    }
+    const request = await fetch("/api/trading/plan", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ticker: formData.ticker,
+        setup: formData.setup,
+        entry_price: formData.entry_price,
+        entry_date: formData.entry_date,
+        entry_reason: formData.entry_reason,
+        risk_note: formData.risk_note,
+        psychology: {
+          confidence_score: formData.confidenceScore,
+          emotion_state: formData.emotionState,
+        },
+        script: formData.script,
+        status: formData.status,
+      }),
+    });
 
     setIsDialogOpen(false);
+    setIsSubmit(false);
+    router.refresh();
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this plan?")) {
-      //   deletePlan(id);
+      await fetch(`/api/trading/plan/${id}`, {
+        method: "DELETE",
+      });
+
+      router.refresh();
     }
   };
 
@@ -160,7 +140,7 @@ export default function View({
       case "ARCHIVE":
         return "bg-gray-100 text-gray-700 border-gray-200";
       case "ACTIVE":
-        return "bg-blue-100 text-blue-700 border-blue-200";
+        return "bg-blue-100 textEdit2-blue-700 border-blue-200";
       case "FAILED":
         return "bg-red-100 text-red-600 border-red-200";
       default:
@@ -172,10 +152,30 @@ export default function View({
     {
       accessorKey: "ticker",
       header: "Ticker",
+      cell: (props) => (
+        <p
+          className="underline cursor-pointer"
+          onClick={() => setIsDialogTicker(String(props.getValue()))}
+        >
+          {String(props.getValue())}
+        </p>
+      ),
     },
     {
-      accessorKey: "setup",
+      accessorKey: "m_trading_setup",
       header: "Setup Name",
+      cell: (props) => (
+        <p
+          className="underline cursor-pointer"
+          onClick={() =>
+            setIsDialogSetup(
+              String(props.row.original.m_trading_setup.setup_slug)
+            )
+          }
+        >
+          {String(props.row.original.m_trading_setup.name)}
+        </p>
+      ),
     },
     {
       accessorKey: "entry_price",
@@ -259,6 +259,26 @@ export default function View({
     {
       accessorKey: "id",
       header: "Actions",
+      cell: (props) => (
+        <div className="flex gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            // onClick={() => handleOpenDialog(setup)}
+            className="hover:bg-muted"
+          >
+            <Edit2 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleDelete(String(props.getValue()))}
+            className="hover:bg-muted"
+          >
+            <Trash2 className="h-4 w-4 text-destructive" />
+          </Button>
+        </div>
+      ),
     },
   ];
 
@@ -276,7 +296,7 @@ export default function View({
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button onClick={() => handleOpenDialog()}>
+              <Button>
                 <Plus className="h-4 w-4 mr-2" />
                 Create Plan
               </Button>
@@ -301,39 +321,71 @@ export default function View({
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="ticker">Ticker Symbol *</Label>
-                      {/* <Input
-                        id="ticker"
+                      <Select
                         value={formData.ticker}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                           setFormData({
                             ...formData,
-                            ticker: e.target.value.toUpperCase(),
+                            ticker: value,
                           })
                         }
-                        placeholder="e.g., AAPL"
                         required
-                      /> */}
-                      <ComboboxBasic />
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {companies?.data?.map((item) => (
+                            <SelectItem value={item.ticker} key={item.id}>
+                              {item.ticker}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="setup">Setup *</Label>
-                      <ComboboxBasic />
+                      <Select
+                        value={formData.setup}
+                        onValueChange={(value) =>
+                          setFormData({
+                            ...formData,
+                            setup: value,
+                            script: String(
+                              setup.data?.find(
+                                (item) => item.setup_slug === value
+                              )?.script
+                            ),
+                          })
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        {/* <SelectContent>
+                          {setup?.data?.map((item) => (
+                            <SelectItem value={item.setup_slug} key={item.id}>
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent> */}
+                      </Select>
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="entryPrice">Entry Price *</Label>
+                      <Label htmlFor="entry_price">Entry Price *</Label>
                       <Input
-                        id="entryPrice"
+                        id="entry_price"
                         type="number"
                         step="0.01"
                         min="0"
-                        value={formData.entryPrice || ""}
+                        value={formData.entry_price || ""}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            entryPrice: parseFloat(e.target.value) || 0,
+                            entry_price: parseFloat(e.target.value) || 0,
                           })
                         }
                         placeholder="0.00"
@@ -341,31 +393,27 @@ export default function View({
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="entryDate">Entry Date *</Label>
-                      <Input
-                        id="entryDate"
-                        type="date"
-                        value={formData.entryDate}
+                      <Label htmlFor="entry_date">Entry Date *</Label>
+                      <DatePickerNaturalLanguage
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            entryDate: e.target.value,
+                            entry_date: new Date(e).toISOString().split("T")[0],
                           })
                         }
-                        required
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="entryReason">Entry Reason *</Label>
+                    <Label htmlFor="entry_reason">Entry Reason *</Label>
                     <Textarea
-                      id="entryReason"
-                      value={formData.entryReason}
+                      id="entry_reason"
+                      value={formData.entry_reason}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          entryReason: e.target.value,
+                          entry_reason: e.target.value,
                         })
                       }
                       placeholder="Why are you taking this trade? What's your thesis?"
@@ -381,7 +429,7 @@ export default function View({
                       onValueChange={(value) =>
                         setFormData({
                           ...formData,
-                          // status: value as TradePlan["status"],
+                          status: value as TradingPlan["status"],
                         })
                       }
                     >
@@ -406,12 +454,12 @@ export default function View({
                   </h3>
 
                   <div className="space-y-2">
-                    <Label htmlFor="riskNote">Risk Note</Label>
+                    <Label htmlFor="risk_note">Risk Note</Label>
                     <Textarea
-                      id="riskNote"
-                      value={formData.riskNote}
+                      id="risk_note"
+                      value={formData.risk_note}
                       onChange={(e) =>
-                        setFormData({ ...formData, riskNote: e.target.value })
+                        setFormData({ ...formData, risk_note: e.target.value })
                       }
                       placeholder="Document your stop loss, position size, and risk management plan"
                       rows={3}
@@ -474,11 +522,11 @@ export default function View({
 
                 <Separator />
 
-                {/* Script Section */}
+                {/* script Section */}
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-sm text-muted-foreground uppercase tracking-wide mb-1">
-                      Script (Editable Checklist)
+                      script (Editable Checklist)
                     </h3>
                     <p className="text-xs text-muted-foreground">
                       Pre-filled from setup. Customize for this specific trade.
@@ -501,8 +549,13 @@ export default function View({
                   >
                     Cancel
                   </Button>
-                  <Button type="submit">
-                    {editingPlan ? "Update Plan" : "Save Plan"}
+                  <Button type="submit" disabled={isSubmit}>
+                    {isSubmit && <Spinner data-icon="inline-start" />}
+                    {editingPlan
+                      ? "Update Plan"
+                      : isSubmit
+                      ? "Create Plan..."
+                      : "Create Plan"}
                   </Button>
                 </div>
               </form>
@@ -546,6 +599,16 @@ export default function View({
           </CardContent>
         </Card>
       )}
+
+      <Setup_Form_Readonly
+        isDialogOpen={isDialogSetup}
+        setIsDialogOpen={() => setIsDialogSetup(null)}
+      />
+
+      <Ticker_Form_Readonly
+        isDialogOpen={isDialogTicker}
+        setIsDialogOpen={() => setIsDialogTicker(null)}
+      />
     </div>
   );
 }

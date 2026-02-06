@@ -11,7 +11,7 @@ export async function GET(req: Request) {
   const search = searchParams.get("search") ?? "";
 
   const res = await fetch(
-    `http://localhost:8000/v1/trading/setup?page=${page}&limit=${limit}&search=${search}`,
+    `http://localhost:3003/v1/trading/setup?page=${page}&limit=${limit}&search=${search}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 
   const body = await req.json();
 
-  const res = await fetch("http://localhost:8000/v1/trading/setup", {
+  const res = await fetch("http://localhost:3003/v1/trading/setup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

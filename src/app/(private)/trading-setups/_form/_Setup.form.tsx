@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -176,6 +176,120 @@ function Setup_Form(props: Props) {
             </Button>
           </div>
         </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function Setup_Form_Readonly(props: {
+  isDialogOpen: string | null;
+  setIsDialogOpen: (open: boolean) => void;
+}) {
+  const { isDialogOpen, setIsDialogOpen } = props;
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState<FormData>({
+    name: "",
+    timeframe: "DAILY",
+    description: "",
+    script: "",
+  });
+
+  React.useEffect(() => {
+    if (!isDialogOpen) return;
+
+    const controller = new AbortController();
+
+    setIsLoading(true);
+    setError("");
+
+    fetch(`/api/trading/setup/${isDialogOpen}`, {
+      signal: controller.signal,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed load data");
+        return res.json();
+      })
+      .then((res) => {
+        setFormData({
+          name: res.data.name,
+          timeframe: res.data.timeframe,
+          description: res.data.description,
+          script: res.data.script,
+        });
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") {
+          setError("Failed to load setup data");
+        }
+      })
+      .finally(() => setIsLoading(false));
+
+    return () => controller.abort();
+  }, [isDialogOpen]);
+
+  return (
+    <Dialog open={Boolean(isDialogOpen)} onOpenChange={setIsDialogOpen}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>View Setup</DialogTitle>
+          <DialogDescription>Trading strategy detail</DialogDescription>
+        </DialogHeader>
+
+        {/* LOADING OVERLAY */}
+        {isLoading && (
+          <div className="absolute inset-0 bg-background/70 backdrop-blur-sm z-10 flex items-center justify-center">
+            <Spinner />
+          </div>
+        )}
+
+        {/* ERROR */}
+        {error && !isLoading && (
+          <div className="text-sm text-destructive py-8 text-center">
+            {error}
+          </div>
+        )}
+
+        {!error && (
+          <form className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Setup Name</Label>
+                <Input value={formData.name} readOnly />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Timeframe</Label>
+                <Input value={formData.timeframe} readOnly />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Description</Label>
+              <Textarea value={formData.description} rows={2} readOnly />
+            </div>
+
+            <div className="space-y-2">
+              <Label>Script</Label>
+              <div
+                className="border rounded-md p-3 text-sm bg-muted/30 min-h-[120px]"
+                dangerouslySetInnerHTML={{ __html: formData.script }}
+              />
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsDialogOpen(false)}
+                disabled={isLoading}
+              >
+                Close
+              </Button>
+            </div>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

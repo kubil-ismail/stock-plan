@@ -20,7 +20,7 @@ export async function GET(
   const { id } = await ctx.params;
 
   const res = await fetch(
-    `http://localhost:8000/v1/companies/${id}/managements`,
+    `http://localhost:3003/v1/companies/${id}/managements`,
     {
       headers: {
         Authorization: `Bearer ${token}`,

@@ -21,7 +21,7 @@ export async function GET(req: Request) {
   const limit = searchParams.get("limit") ?? "10";
 
   const res = await fetch(
-    `http://localhost:8000/v1/general/industries?page=${page}&limit=${limit}`,
+    `http://localhost:3003/v1/general/industries?page=${page}&limit=${limit}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
