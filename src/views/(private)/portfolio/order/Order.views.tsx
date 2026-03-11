@@ -8,6 +8,7 @@ import { mockPortfolioOngoing, mockPortfolioHistory } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter } from "next/navigation";
+import { PR_PATH_PORTO } from "@/lib/route";
 
 export default function OrderDetail() {
   const router = useRouter();
@@ -41,10 +42,9 @@ export default function OrderDetail() {
   const handleDeleteOrder = () => {
     // Mock deletion
     toast.success("Order deleted successfully");
-    router.push("/portfolio");
+    router.push(PR_PATH_PORTO);
   };
 
-  const isConfirmTextValid = confirmText.toUpperCase() === "CONFIRM";
 
   if (!order) {
     return (
@@ -228,7 +228,7 @@ export default function OrderDetail() {
                   Execution Date
                 </p>
                 <p className="text-[15px] font-semibold text-foreground">
-                  {order?.date}
+                  {order?.date ?? ''}
                 </p>
               </div>
             </>

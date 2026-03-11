@@ -1,11 +1,6 @@
-import { SectorDetail } from "@/views/(public)/market/sectors/Sector.views";
-import React from "react";
+import { SectorDetail } from "@/views/(private)/market/sectors/Sector.views";
 
-interface Props {}
-
-function Page(props: Props) {
-  const {} = props;
-
+function Page() {
   return <SectorDetail />;
 }
 

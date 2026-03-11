@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { Badge } from "./badge";
 import Link from "next/link";
+import { PB_PATH_MARKET, PB_PATH_STOCKS, PR_PATH_CALENDAR, PR_PATH_NOTIF, PR_PATH_PORTO } from "@/lib/route";
 
 interface Notification {
   id: string;
@@ -41,7 +42,7 @@ const mockNotifications: Notification[] = [
     icon: DollarSign,
     color: "text-success",
     bgColor: "bg-success/10",
-    link: "/portfolio",
+    link: PR_PATH_PORTO,
   },
   {
     id: "2",
@@ -54,7 +55,7 @@ const mockNotifications: Notification[] = [
     icon: TrendingUp,
     color: "text-primary",
     bgColor: "bg-primary/10",
-    link: "/stocks/TLKM",
+    link: `${PB_PATH_STOCKS}/TLKM`,
   },
   {
     id: "3",
@@ -67,7 +68,7 @@ const mockNotifications: Notification[] = [
     icon: Calendar,
     color: "text-secondary",
     bgColor: "bg-secondary/10",
-    link: "/calendar",
+    link: PR_PATH_CALENDAR,
   },
   {
     id: "4",
@@ -80,7 +81,7 @@ const mockNotifications: Notification[] = [
     icon: Briefcase,
     color: "text-amber-600",
     bgColor: "bg-amber-500/10",
-    link: "/calendar",
+    link: PR_PATH_CALENDAR,
   },
   {
     id: "5",
@@ -93,7 +94,7 @@ const mockNotifications: Notification[] = [
     icon: TrendingUp,
     color: "text-blue-600",
     bgColor: "bg-blue-500/10",
-    link: "/market",
+    link: PB_PATH_MARKET,
   },
 ];
 
@@ -201,7 +202,7 @@ export function NotificationDropdown({
           {/* Footer - View All Button */}
           <div className="p-3 border-t border-border">
             <Link
-              href="/notifications"
+              href={PR_PATH_NOTIF}
               onClick={onClose}
               className="block w-full text-center py-2.5 rounded-lg text-[14px] font-medium text-primary hover:bg-primary/10 transition-colors"
             >

@@ -5,6 +5,7 @@ import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -82,7 +83,7 @@ export default function ForgotPassword() {
 
           <div className="mt-6 text-center">
             <Link
-              href="/auth/login"
+              href={PB_PATH_AUTH_LOGIN}
               className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors font-medium"
             >
               <ArrowLeft className="w-4 h-4" />

@@ -24,6 +24,18 @@ import { useAuth } from "@/contexts/auth-context";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import {
+  PB_PATH_IDEAS,
+  PB_PATH_INDEXES,
+  PB_PATH_MARKET,
+  PB_PATH_SEARCH,
+  PB_PATH_SECTORS,
+  PR_PATH_DASHBOARD,
+  PR_PATH_NOTIF,
+  PR_PATH_ORDER_ADD,
+  PR_PATH_PORTO,
+  PR_PATH_PROFILE,
+} from "@/lib/route";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -74,47 +86,67 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // Desktop navigation - 4 items (removed Calendar)
   const desktopNavigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, requireAuth: true },
-    { name: "Market", href: "/market", icon: BarChart3, requireAuth: false },
+    {
+      name: "Dashboard",
+      href: PR_PATH_DASHBOARD,
+      icon: LayoutDashboard,
+      requireAuth: true,
+    },
+    {
+      name: "Market",
+      href: PB_PATH_MARKET,
+      icon: BarChart3,
+      requireAuth: false,
+    },
     {
       name: "Portfolio",
-      href: "/portfolio",
+      href: PR_PATH_PORTO,
       icon: Briefcase,
       requireAuth: true,
     },
-    { name: "Ideas", href: "/ideas", icon: BookOpen, requireAuth: true },
+    { name: "Ideas", href: PB_PATH_IDEAS, icon: BookOpen, requireAuth: true },
   ];
 
   // Mobile bottom navigation - 5 uniform items (Dashboard, Market, Trade, Portfolio, Profile)
   const mobileNavigation = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, requireAuth: true },
-    { name: "Market", href: "/market", icon: BarChart3, requireAuth: false },
+    {
+      name: "Dashboard",
+      href: PR_PATH_DASHBOARD,
+      icon: LayoutDashboard,
+      requireAuth: true,
+    },
+    {
+      name: "Market",
+      href: PB_PATH_MARKET,
+      icon: BarChart3,
+      requireAuth: false,
+    },
     {
       name: "Trade",
-      href: "/orders/add",
+      href: PR_PATH_ORDER_ADD,
       icon: ArrowUpDown,
       requireAuth: true,
     },
     {
       name: "Portfolio",
-      href: "/portfolio",
+      href: PR_PATH_PORTO,
       icon: Briefcase,
       requireAuth: true,
     },
-    { name: "Profile", href: "/profile", icon: User, requireAuth: true },
+    { name: "Profile", href: PR_PATH_PROFILE, icon: User, requireAuth: true },
   ];
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === "/market") {
+    if (href === PB_PATH_MARKET) {
       return (
-        pathname.startsWith("/market") ||
-        pathname.startsWith("/sectors") ||
-        pathname.startsWith("/indexes")
+        pathname.startsWith(PB_PATH_MARKET) ||
+        pathname.startsWith(PB_PATH_SECTORS) ||
+        pathname.startsWith(PB_PATH_INDEXES)
       );
     }
-    if (href === "/orders/add") {
-      return pathname.startsWith("/orders/add");
+    if (href === PR_PATH_ORDER_ADD) {
+      return pathname.startsWith(PR_PATH_ORDER_ADD);
     }
     return pathname.startsWith(href);
   };
@@ -126,7 +158,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-3">
+            <Link href={PR_PATH_DASHBOARD} className="flex items-center gap-3">
               <GlassCard className="w-10 h-10 flex items-center justify-center p-0">
                 <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-secondary" />
               </GlassCard>
@@ -206,7 +238,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 />
               </div>
 
-              <Link href="/profile" onClick={handleProfileClick}>
+              <Link href={PR_PATH_PROFILE} onClick={handleProfileClick}>
                 <button className="text-muted-foreground hover:text-foreground transition-colors">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-semibold text-[14px] text-primary">
                     JD
@@ -224,7 +256,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="px-4">
             <div className="flex items-center justify-between h-14">
               {/* Logo */}
-              <Link href="/" className="flex items-center gap-2">
+              <Link href={PR_PATH_DASHBOARD} className="flex items-center gap-2">
                 <GlassCard className="w-9 h-9 flex items-center justify-center p-0">
                   <div className="w-5 h-5 rounded-md bg-gradient-to-br from-primary to-secondary" />
                 </GlassCard>
@@ -237,7 +269,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div className="flex items-center gap-2">
                 {/* Search Icon - Mobile */}
                 <button
-                  onClick={() => router.push("/search")}
+                  onClick={() => router.push(PB_PATH_SEARCH)}
                   className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors active:scale-95"
                 >
                   <Search className="w-5 h-5" />
@@ -245,7 +277,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 {/* Notification Icon - Mobile */}
                 <button
-                  onClick={() => router.push("/notifications")}
+                  onClick={() => router.push(PR_PATH_NOTIF)}
                   className="relative p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors active:scale-95"
                 >
                   <Bell className="w-5 h-5" />
@@ -357,7 +389,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </nav>
 
       {/* Floating Action Button - Mobile Only - Portfolio Page Only */}
-      {pathname === "/portfolio" && <FloatingActionButton />}
+      {pathname === PR_PATH_PORTO && <FloatingActionButton />}
 
       {/* Search Modal - Desktop */}
       <SearchModal

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { mockIndexes, mockSectors, mockStocks } from "@/lib/mock-data";
 import { toast } from "sonner";
+import { PB_PATH_INDEXES, PB_PATH_MARKET, PB_PATH_SECTORS, PB_PATH_STOCKS } from "@/lib/route";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
 type SortOption =
@@ -343,7 +344,7 @@ export default function Market() {
                         ? "hover:bg-success/5"
                         : "hover:bg-destructive/5"
                     }`}
-                    onClick={() => navigate.push(`/market/indexes/${index.id}`)}
+                    onClick={() => navigate.push(`${PB_PATH_INDEXES}/${index.id}`)}
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div>
@@ -452,7 +453,7 @@ export default function Market() {
                         : "hover:bg-destructive/5"
                     }`}
                     onClick={() =>
-                      navigate.push(`/market/sectors/${sector.id}`)
+                      navigate.push(`${PB_PATH_SECTORS}/${sector.id}`)
                     }
                   >
                     <div className="flex items-start justify-between mb-4">
@@ -530,7 +531,7 @@ export default function Market() {
                         : "hover:bg-destructive/5"
                     }`}
                     onClick={() =>
-                      navigate.push(`/market/sectors/${sector.id}`)
+                      navigate.push(`${PB_PATH_SECTORS}/${sector.id}`)
                     }
                   >
                     <div className="flex items-center gap-4">
@@ -738,7 +739,7 @@ export default function Market() {
                             : "hover:bg-destructive/5"
                         }`}
                         onClick={() =>
-                          navigate.push(`/market/stocks/${stock.id}`)
+                          navigate.push(`${PB_PATH_STOCKS}/${stock.id}`)
                         }
                       >
                         {/* Remove Bookmark Button */}
@@ -893,7 +894,9 @@ export default function Market() {
                         : "hover:bg-destructive/5"
                     }`}
                     style={{ animationDelay: `${index * 20}ms` }}
-                    onClick={() => navigate.push(`/market/stocks/${stock.id}`)}
+                    onClick={() =>
+                      navigate.push(`${PB_PATH_STOCKS}/${stock.id}`)
+                    }
                   >
                     <div className="flex items-center gap-4">
                       {/* Stock Logo */}

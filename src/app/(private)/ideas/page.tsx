@@ -1,11 +1,6 @@
 import Ideas from "@/views/(private)/ideas/Ideas.views";
-import React from "react";
 
-interface Props {}
-
-function Page(props: Props) {
-  const {} = props;
-
+function Page() {
   return <Ideas />;
 }
 

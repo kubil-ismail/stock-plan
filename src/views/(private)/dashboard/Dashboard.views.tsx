@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { mockStocks, mockIndexes } from "@/lib/mock-data";
 import { useRouter } from "next/navigation";
+import { PB_PATH_MARKET, PB_PATH_STOCKS } from "@/lib/route";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -181,7 +182,7 @@ export default function Dashboard() {
             Market Indexes
           </h2>
           <button
-            onClick={() => router.push("/market")}
+            onClick={() => router.push(PB_PATH_MARKET)}
             className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors"
           >
             View All
@@ -200,7 +201,7 @@ export default function Dashboard() {
                   className={`flex-shrink-0 w-[240px] p-4 transition-all cursor-pointer ${
                     isPositive ? "hover:bg-success/5" : "hover:bg-destructive/5"
                   }`}
-                  onClick={() => router.push("/market")}
+                  onClick={() => router.push(PB_PATH_MARKET)}
                 >
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -247,7 +248,7 @@ export default function Dashboard() {
                 className={`p-5 transition-all cursor-pointer ${
                   isPositive ? "hover:bg-success/5" : "hover:bg-destructive/5"
                 }`}
-                onClick={() => router.push("/market")}
+                onClick={() => router.push(PB_PATH_MARKET)}
               >
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -293,7 +294,9 @@ export default function Dashboard() {
               Top Gainers
             </h2>
             <button
-              onClick={() => router.push("/market?tab=stocks&filter=gainers")}
+              onClick={() =>
+                router.push(`${PB_PATH_MARKET}?tab=stocks&filter=gainers`)
+              }
               className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors"
             >
               View All
@@ -311,7 +314,7 @@ export default function Dashboard() {
                 changePercent={stock.changePercent}
                 trend={stock.trend}
                 subSector={stock.subSector}
-                onClick={() => router.push(`/stocks/${stock.id}`)}
+                onClick={() => router.push(`${PB_PATH_STOCKS}/${stock.id}`)}
               />
             ))}
           </div>
@@ -324,7 +327,7 @@ export default function Dashboard() {
               Top Losers
             </h2>
             <button
-              onClick={() => router.push("/market?tab=stocks&filter=losers")}
+              onClick={() => router.push(`${PB_PATH_MARKET}?tab=stocks&filter=losers`)}
               className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors"
             >
               View All
@@ -342,7 +345,7 @@ export default function Dashboard() {
                 changePercent={stock.changePercent}
                 trend={stock.trend}
                 subSector={stock.subSector}
-                onClick={() => router.push(`/stocks/${stock.id}`)}
+                onClick={() => router.push(`${PB_PATH_STOCKS}/${stock.id}`)}
               />
             ))}
           </div>

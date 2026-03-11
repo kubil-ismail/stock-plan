@@ -6,6 +6,7 @@ import { Input } from "@/components/input";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
+import { PB_PATH_AUTH_FORGOT, PB_PATH_AUTH_REGISTER, PB_PATH_MARKET } from "@/lib/route";
 
 export default function Login() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
 
   // Get return URL from location state or default to market
-  const returnUrl = "/market";
+  const returnUrl = PB_PATH_MARKET;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,7 +75,7 @@ export default function Login() {
                 </span>
               </label>
               <Link
-                href="/auth/forgot-password"
+                href={PB_PATH_AUTH_FORGOT}
                 className="text-[14px] text-primary hover:text-primary/80 transition-colors"
               >
                 Forgot password?
@@ -90,7 +91,7 @@ export default function Login() {
             <p className="text-[14px] text-muted-foreground">
               Don&apos;t have an account?{" "}
               <Link
-                href="/auth/register"
+                href={PB_PATH_AUTH_REGISTER}
                 className="text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 Sign up

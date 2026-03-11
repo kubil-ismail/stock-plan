@@ -1,11 +1,6 @@
-import React from "react";
-import Market from "@/views/(public)/market/Market.views";
+import Market from "@/views/(private)/market/Market.views";
 
-interface Props {}
-
-function Page(props: Props) {
-  const {} = props;
-
+function Page() {
   return <Market />;
 }
 

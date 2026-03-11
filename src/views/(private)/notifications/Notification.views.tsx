@@ -12,6 +12,7 @@ import {
   Bell,
 } from "lucide-react";
 import { useNotifications } from "@/contexts/notification-context";
+import { PB_PATH_MARKET, PR_PATH_CALENDAR, PR_PATH_PORTO } from "@/lib/route";
 
 // Mock notification data with types
 const mockNotifications = [
@@ -121,12 +122,12 @@ export default function Notifications() {
   ) => {
     // Navigate based on type
     if (notification.type === "calendar") {
-      router.push("/calendar");
+      router.push(PR_PATH_CALENDAR);
     } else if (notification.type === "orders") {
-      router.push("/portfolio");
+      router.push(PR_PATH_PORTO);
     } else if (notification.type === "alerts") {
       // Could navigate to specific stock or market
-      router.push("/market");
+      router.push(PB_PATH_MARKET);
     }
   };
 
@@ -260,7 +261,7 @@ export default function Notifications() {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
           <button
-            onClick={() => router.push("/calendar")}
+            onClick={() => router.push(PR_PATH_CALENDAR)}
             className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors text-left"
           >
             <div className="flex items-center gap-3">
@@ -272,7 +273,7 @@ export default function Notifications() {
             <ArrowLeft className="w-4 h-4 text-muted-foreground rotate-180" />
           </button>
           <button
-            onClick={() => router.push("/portfolio")}
+            onClick={() => router.push(PR_PATH_PORTO)}
             className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors text-left"
           >
             <div className="flex items-center gap-3">

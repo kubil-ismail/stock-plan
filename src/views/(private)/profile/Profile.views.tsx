@@ -25,6 +25,7 @@ import {
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
 
 export default function Profile() {
   const searchParams = useSearchParams();
@@ -317,7 +318,7 @@ export default function Profile() {
           className="w-full justify-center text-destructive hover:text-destructive hover:bg-destructive/5 flex items-center gap-2"
           onClick={() => {
             logout();
-            router.push("/auth/login");
+            router.push(PB_PATH_AUTH_LOGIN);
             toast.success("Logged out successfully");
           }}
         >

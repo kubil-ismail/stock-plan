@@ -6,6 +6,7 @@ import { ArrowLeft, Target, TrendingUp, CheckCircle2 } from "lucide-react";
 import { mockSetups } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams } from "next/navigation";
+import { PB_PATH_IDEAS } from "@/lib/route";
 import Link from "next/link";
 
 export default function IdeasDetail() {
@@ -38,7 +39,7 @@ export default function IdeasDetail() {
       {/* Header - Desktop Only */}
       <div className="hidden md:block">
         <Link
-          href="/ideas"
+          href={PB_PATH_IDEAS}
           className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />

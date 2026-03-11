@@ -10,6 +10,7 @@ import { useKeyboardShortcut } from '../hooks/use-keyboard-shortcut';
 import { useNotifications } from '../contexts/notification-context';
 import { useAuth } from '../contexts/auth-context';
 import { useDetailNavbar } from '../contexts/detail-navbar-context';
+import { PR_PATH_DASHBOARD, PR_PATH_PROFILE } from '@/lib/route';
 
 export function Layout() {
   const location = useLocation();
@@ -88,7 +89,7 @@ export function Layout() {
         <div className="max-w-[1400px] mx-auto px-6">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link to={PR_PATH_DASHBOARD} className="flex items-center gap-3">
               <GlassCard className="w-10 h-10 flex items-center justify-center p-0">
                 <div className="w-6 h-6 rounded-md bg-gradient-to-br from-primary to-secondary" />
               </GlassCard>
@@ -164,7 +165,7 @@ export function Layout() {
                 />
               </div>
 
-              <Link to="/profile" onClick={handleProfileClick}>
+              <Link to={PR_PATH_PROFILE} onClick={handleProfileClick}>
                 <button className="text-muted-foreground hover:text-foreground transition-colors">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-semibold text-[14px] text-primary">
                     JD
@@ -182,7 +183,7 @@ export function Layout() {
           <div className="px-4">
             <div className="flex items-center justify-between h-14">
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-2">
+              <Link to={PR_PATH_DASHBOARD} className="flex items-center gap-2">
                 <GlassCard className="w-9 h-9 flex items-center justify-center p-0">
                   <div className="w-5 h-5 rounded-md bg-gradient-to-br from-primary to-secondary" />
                 </GlassCard>

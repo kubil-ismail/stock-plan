@@ -1,7 +1,9 @@
+"use client";
 import Link from "next/link";
 import { GlassCard } from "@/components/glass-card";
 import { TrendingUp, Target } from "lucide-react";
 import { mockSetups } from "@/lib/mock-data";
+import { PB_PATH_IDEAS } from "@/lib/route";
 
 export default function Ideas() {
   return (
@@ -17,7 +19,7 @@ export default function Ideas() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {mockSetups.map((setup) => (
-          <Link key={setup.id} href={`/ideas/${setup.id}`}>
+          <Link key={setup.id} href={`${PB_PATH_IDEAS}/${setup.id}`}>
             <GlassCard hover className="overflow-hidden">
               {/* Thumbnail */}
               <div

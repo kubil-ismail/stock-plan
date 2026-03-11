@@ -1,10 +1,11 @@
+import { PR_PATH_ORDER_ADD } from "@/lib/route";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export function FloatingActionButton() {
   return (
     <Link
-      href="/orders/add"
+      href={PR_PATH_ORDER_ADD}
       className="fixed bottom-24 md:bottom-8 right-6 z-40 group"
       aria-label="Trade"
     >

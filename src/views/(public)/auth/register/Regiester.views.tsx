@@ -6,6 +6,7 @@ import { Input } from "@/components/input";
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
+import { PB_PATH_AUTH_LOGIN, PB_PATH_MARKET } from "@/lib/route";
 
 export default function Register() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function Register() {
   });
 
   // Get return URL from location state or default to market
-  const returnUrl = "/market";
+  const returnUrl = PB_PATH_MARKET;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,7 +103,7 @@ export default function Register() {
             <p className="text-[14px] text-muted-foreground">
               Already have an account?{" "}
               <Link
-                href="/auth/login"
+                href={PB_PATH_AUTH_LOGIN}
                 className="text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 Sign in

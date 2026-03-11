@@ -5,6 +5,7 @@ import { mockStocks } from "../lib/mock-data";
 import { useRecentSearches } from "../hooks/use-recent-searches";
 import { cn } from "../lib/utils";
 import { useRouter } from "next/navigation";
+import { PB_PATH_STOCKS } from "@/lib/route";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -89,7 +90,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
       code: stock.code,
       name: stock.name,
     });
-    router.push(`/stocks/${stock.id}`);
+    router.push(`${PB_PATH_STOCKS}/${stock.id}`);
     onClose();
   };
 

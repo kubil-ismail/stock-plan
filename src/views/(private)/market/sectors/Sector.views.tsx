@@ -4,34 +4,35 @@ import { GlassCard } from "@/components/glass-card";
 import { StockCard } from "@/components/stock-card";
 import { Button } from "@/components/button";
 import { ArrowLeft, Search } from "lucide-react";
-import { mockStocks, mockIndexes } from "@/lib/mock-data";
+import { mockStocks, mockSectors } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { PB_PATH_MARKET, PB_PATH_STOCKS } from "@/lib/route";
 
-export default function IndexDetail() {
+export function SectorDetail() {
   const { code } = useParams();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"gainer" | "loser" | "none">("none");
   const { setNavbar, clearNavbar } = useDetailNavbar();
 
-  const index = mockIndexes.find((i) => i.id === code);
-
-  // Use all stocks as mock index constituents
-  const indexStocks = mockStocks;
+  const sector = mockSectors.find((s) => s.id === code);
+  const sectorStocks = mockStocks.filter(
+    (s) => s.sector.toLowerCase() === sector?.name.toLowerCase()
+  );
 
   // Set detail navbar title
   useEffect(() => {
-    if (index) {
+    if (sector) {
       setNavbar({
-        title: index.code,
+        title: sector.name,
       });
     }
     return () => clearNavbar();
-  }, [index, setNavbar, clearNavbar]);
+  }, [sector, setNavbar, clearNavbar]);
 
-  const filteredStocks = indexStocks.filter(
+  const filteredStocks = sectorStocks.filter(
     (stock) =>
       stock.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       stock.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -43,8 +44,8 @@ export default function IndexDetail() {
     return 0;
   });
 
-  if (!index) {
-    return <div>Index not found</div>;
+  if (!sector) {
+    return <div>Sector not found</div>;
   }
 
   return (
@@ -52,38 +53,18 @@ export default function IndexDetail() {
       {/* Header - Desktop Only */}
       <div className="hidden md:block">
         <Link
-          href="/market"
+          href={PB_PATH_MARKET}
           className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Indexes
+          Back to Sectors
         </Link>
-        <div className="flex items-start justify-between">
-          <div>
-            <h1 className="text-[32px] font-bold text-foreground mb-2">
-              {index.name}
-            </h1>
-            <p className="text-[14px] text-muted-foreground">
-              {index.code} • {index.stockCount} constituent stocks
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-[28px] font-bold text-foreground">
-              {index.value.toLocaleString("en-US", {
-                minimumFractionDigits: 2,
-              })}
-            </p>
-            <p
-              className={`text-[14px] font-medium ${
-                index.change >= 0 ? "text-success" : "text-destructive"
-              }`}
-            >
-              {index.change >= 0 ? "+" : ""}
-              {index.change.toFixed(2)} ({index.changePercent >= 0 ? "+" : ""}
-              {index.changePercent.toFixed(2)}%)
-            </p>
-          </div>
-        </div>
+        <h1 className="text-[32px] font-bold text-foreground mb-2">
+          {sector.name}
+        </h1>
+        <p className="text-[14px] text-muted-foreground">
+          {sector.stockCount} stocks in this sector
+        </p>
       </div>
 
       {/* Search and Filters */}
@@ -128,7 +109,7 @@ export default function IndexDetail() {
             changePercent={stock.changePercent}
             trend={stock.trend}
             subSector={stock.subSector}
-            onClick={() => router.push(`/stocks/${stock.id}`)}
+            onClick={() => router.push(`${PB_PATH_STOCKS}/${stock.id}`)}
           />
         ))}
       </div>

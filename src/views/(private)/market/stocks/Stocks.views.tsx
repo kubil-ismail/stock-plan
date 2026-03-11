@@ -44,6 +44,7 @@ import {
 } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter } from "next/navigation";
+import { PR_PATH_ORDER_ADD, PR_PATH_PORTO } from "@/lib/route";
 
 // Generate chart data
 const generateChartData = (days: number) => {
@@ -213,7 +214,7 @@ export default function StockDetail() {
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={() => router.push(`/orders/add?stock=${stock.id}`)}
+                  onClick={() => router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)}
                 >
                   <Plus className="w-4 h-4 mr-1.5" />
                   Add Order
@@ -221,7 +222,7 @@ export default function StockDetail() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => router.push("/portfolio")}
+                  onClick={() => router.push(PR_PATH_PORTO)}
                 >
                   <Eye className="w-4 h-4 mr-1.5" />
                   View Orders
@@ -383,7 +384,7 @@ export default function StockDetail() {
               </p>
               <Button
                 variant="primary"
-                onClick={() => router.push(`/orders/add?stock=${stock.id}`)}
+                onClick={() => router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)}
               >
                 <Plus className="w-4 h-4 mr-1.5" />
                 Create First Order

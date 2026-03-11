@@ -1,3 +1,4 @@
+import { PB_PATH_AUTH_LOGIN, PB_PATH_AUTH_REGISTER } from "@/lib/route";
 import { X, LogIn, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -12,12 +13,12 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
   if (!isOpen) return null;
 
   const handleLogin = () => {
-    router.push("/auth/login");
+    router.push(PB_PATH_AUTH_LOGIN);
     onClose();
   };
 
   const handleSignUp = () => {
-    router.push("/auth/register");
+    router.push(PB_PATH_AUTH_REGISTER);
     onClose();
   };
 

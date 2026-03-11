@@ -1,14 +1,7 @@
-import StockDetail from "@/views/(public)/market/stocks/Stocks.views";
-import React from 'react'
+import StockDetail from "@/views/(private)/market/stocks/Stocks.views";
 
-interface Props {}
-
-function Page(props: Props) {
-    const {} = props
-
-    return (
-        <StockDetail />
-    )
+function Page() {
+  return <StockDetail />;
 }
 
-export default Page
+export default Page;

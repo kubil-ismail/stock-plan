@@ -13,6 +13,7 @@ import {
 import { mockStocks, mockBrokers, mockSetups } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
+import { PR_PATH_PORTO, PR_PATH_PROFILE } from "@/lib/route";
 
 export default function AddOrder() {
   const router = useRouter();
@@ -56,7 +57,7 @@ export default function AddOrder() {
 
     // Mock order submission
     toast.success("Order created successfully!");
-    router.push("/portfolio");
+    router.push(PR_PATH_PORTO);
   };
 
   return (
@@ -171,7 +172,7 @@ export default function AddOrder() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => router.push("/profile?section=brokers")}
+                    onClick={() => router.push(`${PR_PATH_PROFILE}?section=brokers`)}
                     className="text-[13px] text-primary hover:underline flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />

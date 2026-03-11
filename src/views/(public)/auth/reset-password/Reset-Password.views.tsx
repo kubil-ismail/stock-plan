@@ -4,6 +4,7 @@ import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -15,7 +16,7 @@ export default function ResetPassword() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock password reset - redirect to login
-    router.push("/auth/login");
+    router.push(PB_PATH_AUTH_LOGIN);
   };
 
   return (

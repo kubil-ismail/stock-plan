@@ -1,11 +1,6 @@
-import IndexDetail from "@/views/(public)/market/indexes/Indexes.views";
-import React from "react";
+import IndexDetail from "@/views/(private)/market/indexes/Indexes.views";
 
-interface Props {}
-
-function Page(props: Props) {
-  const {} = props;
-
+function Page() {
   return <IndexDetail />;
 }
 

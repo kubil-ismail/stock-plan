@@ -6,6 +6,7 @@ import { Button } from "@/components/button";
 import { Search, X } from "lucide-react";
 import { mockPortfolioOngoing, mockPortfolioHistory } from "@/lib/mock-data";
 import { useRouter } from "next/navigation";
+import { PR_PATH_ORDER } from "@/lib/route";
 
 export default function Portfolio() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function Portfolio() {
 
     if (isMobile) {
       // Navigate to dedicated order detail page on mobile
-      router.push(`/orders/${order.id}`);
+      router.push(`${PR_PATH_ORDER}/${order.id}`);
     } else {
       // Show side panel on desktop
       setSelectedOrder(order);
