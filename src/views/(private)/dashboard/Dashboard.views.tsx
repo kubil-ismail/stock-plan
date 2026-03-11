@@ -297,7 +297,7 @@ export default function Dashboard() {
               onClick={() =>
                 router.push(`${PB_PATH_MARKET}?tab=stocks&filter=gainers`)
               }
-              className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors"
+              className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer cursor-pointer"
             >
               View All
               <ArrowRight className="w-4 h-4" />
@@ -327,8 +327,10 @@ export default function Dashboard() {
               Top Losers
             </h2>
             <button
-              onClick={() => router.push(`${PB_PATH_MARKET}?tab=stocks&filter=losers`)}
-              className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors"
+              onClick={() =>
+                router.push(`${PB_PATH_MARKET}?tab=stocks&filter=losers`)
+              }
+              className="flex items-center gap-1.5 text-[14px] font-medium text-primary hover:text-primary/80 transition-colors cursor-pointer"
             >
               View All
               <ArrowRight className="w-4 h-4" />

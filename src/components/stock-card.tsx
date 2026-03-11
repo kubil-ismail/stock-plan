@@ -18,7 +18,6 @@ export function StockCard({
   price,
   change,
   changePercent,
-  subSector,
   onClick,
 }: StockCardProps) {
   const isPositive = change >= 0;
@@ -26,7 +25,7 @@ export function StockCard({
   return (
     <GlassCard
       hover
-      className={`p-5 cursor-pointer transition-all ${
+      className={`px-5 pt-5 pb-3 cursor-pointer transition-all ${
         isPositive ? "hover:bg-success/5" : "hover:bg-destructive/5"
       }`}
       onClick={onClick}
@@ -42,16 +41,14 @@ export function StockCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2 mb-1">
             <div>
-              <h3 className="text-[16px] font-bold text-foreground">{code}</h3>
+              <div className="flex">
+                <h3 className="text-[16px] font-bold text-foreground">
+                  {code}
+                </h3>
+              </div>
               <p className="text-[13px] text-muted-foreground truncate">
                 {name}
               </p>
-
-              {subSector && (
-                <Badge variant="secondary" size="sm" className="mt-2">
-                  {subSector}
-                </Badge>
-              )}
             </div>
             <div className="text-right">
               <p className="text-[20px] font-bold text-foreground">
