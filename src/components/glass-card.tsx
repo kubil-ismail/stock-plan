@@ -23,10 +23,12 @@ export function GlassCard({
   return (
     <div
       className={cn(
-        'rounded-[16px] border border-white/40 backdrop-blur-[12px] transition-all duration-200 ease-in-out',
-        'bg-[rgba(255,255,255,0.65)]',
+        "rounded-[16px] border border-white/40 transition-all duration-200 ease-in-out",
+        "bg-white/90 md:bg-white/70",
+        "md:backdrop-blur-lg",
         elevationStyles[elevation],
-        hover && 'hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5',
+        hover &&
+          "hover:shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:-translate-y-0.5",
         className
       )}
       {...props}

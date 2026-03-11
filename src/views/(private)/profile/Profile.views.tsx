@@ -97,7 +97,7 @@ export default function Profile() {
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
       {/* Header */}
-      <div>
+      <div className="hidden md:block">
         <h1 className="text-[24px] md:text-[32px] font-bold text-foreground mb-2">
           Profile
         </h1>

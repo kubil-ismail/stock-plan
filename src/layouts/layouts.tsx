@@ -151,6 +151,29 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     return pathname.startsWith(href);
   };
 
+  const isActiveMobile = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href === PB_PATH_MARKET) {
+      return (
+        pathname.startsWith(PB_PATH_MARKET) ||
+        pathname.startsWith(PB_PATH_SECTORS) ||
+        pathname.startsWith(PB_PATH_INDEXES)
+      );
+    }
+    if (href === PR_PATH_ORDER_ADD) {
+      return pathname.startsWith(PR_PATH_ORDER_ADD);
+    }
+
+    if (href === PR_PATH_PORTO) {
+      return (
+        pathname === PR_PATH_PORTO ||
+        (pathname !== PR_PATH_ORDER_ADD && pathname.startsWith(PR_PATH_PORTO))
+      );
+    }
+
+    return pathname.startsWith(href);
+  };
+
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Desktop Navbar */}
@@ -256,7 +279,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="px-4">
             <div className="flex items-center justify-between h-14">
               {/* Logo */}
-              <Link href={PR_PATH_DASHBOARD} className="flex items-center gap-2">
+              <Link
+                href={PR_PATH_DASHBOARD}
+                className="flex items-center gap-2"
+              >
                 <GlassCard className="w-9 h-9 flex items-center justify-center p-0">
                   <div className="w-5 h-5 rounded-md bg-gradient-to-br from-primary to-secondary" />
                 </GlassCard>
@@ -347,7 +373,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="grid grid-cols-5 h-16">
           {mobileNavigation.map((item) => {
             const Icon = item.icon;
-            const active = isActive(item.href);
+            const active = isActiveMobile(item.href);
 
             if (item.requireAuth && !isAuthenticated) {
               return (

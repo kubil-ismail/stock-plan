@@ -14,10 +14,11 @@ import { mockStocks, mockBrokers, mockSetups } from "@/lib/mock-data";
 import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PR_PATH_PORTO, PR_PATH_PROFILE } from "@/lib/route";
+import Link from "next/link";
 
 export default function AddOrder() {
   const router = useRouter();
-  const searchParams = useSearchParams  ();
+  const searchParams = useSearchParams();
 
   // Get stock from URL param or use default
   const stockIdParam = searchParams.get("stock");
@@ -61,18 +62,26 @@ export default function AddOrder() {
   };
 
   return (
-    <div className="px-4 md:px-6 py-6 md:py-8 pb-24 md:pb-8">
+    <div className="pb-24 md:pb-8">
       <div className="max-w-[1000px] mx-auto space-y-6 md:space-y-8">
         {/* Header */}
-        <button
+        {/* <button
           onClick={() => router.back()}
-          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-2"
+          className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-2"
         >
           <ArrowLeft className="w-5 h-5" />
           <span className="text-[14px] font-medium">Back</span>
-        </button>
+        </button> */}
 
-        <div>
+        <Link
+          href={PR_PATH_PORTO}
+          className="hidden md:inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back
+        </Link>
+
+        <div className="hidden md:block">
           <h1 className="text-[24px] md:text-[32px] font-bold text-foreground mb-2">
             Add New Order
           </h1>
@@ -80,7 +89,6 @@ export default function AddOrder() {
             Create a new trading order with your preferred setup
           </p>
         </div>
-
         {/* Stock Preview */}
         <GlassCard className="p-5 md:p-6">
           <div className="flex items-start gap-4">
@@ -172,7 +180,9 @@ export default function AddOrder() {
                   </label>
                   <button
                     type="button"
-                    onClick={() => router.push(`${PR_PATH_PROFILE}?section=brokers`)}
+                    onClick={() =>
+                      router.push(`${PR_PATH_PROFILE}?section=brokers`)
+                    }
                     className="text-[13px] text-primary hover:underline flex items-center gap-1"
                   >
                     <Plus className="w-3.5 h-3.5" />

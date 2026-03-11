@@ -14,17 +14,6 @@ export default function Portfolio() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
-  // Simplified portfolio metrics
-  const totalValue = 52890.45;
-  const dailyChange = 1250.3;
-  const dailyChangePercent = 2.42;
-  const totalPL = 2450.75;
-  const totalPLPercent = 4.85;
-  const invested = 42350.0;
-  const totalLot = 85;
-  const totalStocks = 12;
-  const winRate = 67;
-
   const filteredOngoing = mockPortfolioOngoing.filter(
     (item) =>
       item.stockCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -53,7 +42,7 @@ export default function Portfolio() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="hidden md:block">
         <h1 className="text-[28px] md:text-[32px] font-bold text-foreground mb-2">
           Portfolio
         </h1>
