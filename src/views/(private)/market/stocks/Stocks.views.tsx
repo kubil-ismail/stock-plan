@@ -28,7 +28,6 @@ import {
   Shield,
   Network,
   Plus,
-  Eye,
   Info,
   DollarSign,
   Wallet,
@@ -36,6 +35,7 @@ import {
   TrendingUp as TrendingUpIcon,
   Globe,
   Calendar,
+  StarIcon,
 } from "lucide-react";
 import {
   mockStocks,
@@ -44,7 +44,8 @@ import {
 } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter } from "next/navigation";
-import { PR_PATH_ORDER_ADD, PR_PATH_PORTO } from "@/lib/route";
+import { PB_PATH_MARKET, PR_PATH_ORDER_ADD } from "@/lib/route";
+import Link from "next/link";
 
 // Generate chart data
 const generateChartData = (days: number) => {
@@ -133,16 +134,16 @@ export default function StockDetail() {
   const chartData = generateChartData(timeRangeDays[timeRange]);
 
   return (
-    <div className="px-4 md:px-6 py-6 md:py-8 pb-24 md:pb-8">
-      <div className="max-w-[1400px] mx-auto space-y-6 md:space-y-8">
+    <div className="md:py-0 pb-24 md:pb-8">
+      <div className="mx-auto space-y-6 md:space-y-8">
         {/* Back Button - Desktop Only */}
-        <button
-          onClick={() => router.back()}
-          className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-2"
+        <Link
+          href={PB_PATH_MARKET}
+          className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span className="text-[14px] font-medium">Back</span>
-        </button>
+          <ArrowLeft className="w-4 h-4" />
+          Back to Stocks
+        </Link>
 
         {/* Stock Header Section */}
         <GlassCard className="p-5 md:p-8">
@@ -154,42 +155,15 @@ export default function StockDetail() {
               </span>
             </div>
 
-            <div className="flex-1 space-y-5">
+            <div className="flex-1 space-y-4">
               {/* Stock Info */}
               <div>
-                <h1 className="text-[28px] md:text-[36px] font-bold text-foreground mb-1">
+                <h1 className="text-[28px] md:text-[28px] font-bold text-foreground mb-1">
                   {stock.code}
                 </h1>
                 <p className="text-[16px] md:text-[18px] text-muted-foreground mb-4">
                   {stock.name}
                 </p>
-
-                {/* Price and Change */}
-                <div className="flex flex-wrap items-end gap-4 mb-4">
-                  <div>
-                    <p className="text-[36px] md:text-[48px] font-bold text-foreground leading-none">
-                      ${stock.price.toFixed(2)}
-                    </p>
-                  </div>
-                  <div
-                    className={`flex items-center gap-2 pb-2 ${
-                      isPositive ? "text-success" : "text-destructive"
-                    }`}
-                  >
-                    {isPositive ? (
-                      <TrendingUp className="w-6 h-6" />
-                    ) : (
-                      <TrendingDown className="w-6 h-6" />
-                    )}
-                    <span className="text-[24px] font-semibold">
-                      {isPositive ? "+" : ""}
-                      {stock.changePercent.toFixed(2)}%
-                    </span>
-                    <span className="text-[18px] font-medium">
-                      ({isPositive ? "+" : ""}${stock.change.toFixed(2)})
-                    </span>
-                  </div>
-                </div>
               </div>
 
               {/* Metadata Badges */}
@@ -209,23 +183,62 @@ export default function StockDetail() {
                 </Badge>
               </div>
 
+              {/* Price and Change */}
+              <div>
+                <div className="flex items-center gap-4 mb-1">
+                  <div>
+                    <p className="text-[36px] md:text-[28px] font-bold text-foreground leading-none">
+                      ${stock.price.toFixed(2)}
+                    </p>
+                  </div>
+                  <div
+                    className={`flex items-center gap-2 ${
+                      isPositive ? "text-success" : "text-destructive"
+                    }`}
+                  >
+                    {isPositive ? (
+                      <TrendingUp className="w-6 h-6" />
+                    ) : (
+                      <TrendingDown className="w-6 h-6" />
+                    )}
+                    <span className="text-[24px] font-semibold">
+                      {isPositive ? "+" : ""}
+                      {stock.changePercent.toFixed(2)}%
+                    </span>
+                    <span className="text-[18px] font-medium">
+                      ({isPositive ? "+" : ""}${stock.change.toFixed(2)})
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-secondary text-[14px]">
+                  As of today at 14:39 GMT+7
+                </p>
+              </div>
+
               {/* Quick CTAs */}
-              <div className="flex flex-wrap gap-3 pt-2">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)}
-                >
-                  <Plus className="w-4 h-4 mr-1.5" />
-                  Add Order
-                </Button>
+              <div className="flex flex-wrap gap-3 pt-1">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => router.push(PR_PATH_PORTO)}
+                  className="flex items-center"
+                  onClick={() =>
+                    router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)
+                  }
                 >
-                  <Eye className="w-4 h-4 mr-1.5" />
-                  View Orders
+                  <StarIcon className="w-3 h-3 mr-1.5" />
+                  Bookmark
+                </Button>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="flex items-center"
+                  onClick={() =>
+                    router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)
+                  }
+                >
+                  <Plus className="w-3 h-3 mr-1.5" />
+                  Add Order
                 </Button>
               </div>
             </div>
@@ -233,19 +246,19 @@ export default function StockDetail() {
         </GlassCard>
 
         {/* Your Asset Allocation in This Stock */}
-        <GlassCard className="p-5 md:p-6 border-2 border-primary/10">
-          <h3 className="text-[20px] font-semibold text-foreground mb-1 flex items-center gap-2">
-            <Wallet className="w-5 h-5 text-primary" />
-            Your Allocation in This Stock
-          </h3>
-          <p className="text-[13px] text-muted-foreground mb-5">
-            Summary of your holdings and performance for {stock.code}
-          </p>
+        {Boolean(userPosition) && (
+          <GlassCard className="p-5 md:p-6 border-2">
+            <h3 className="text-[20px] font-semibold text-foreground mb-1 flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-primary" />
+              Your Allocation in This Stock
+            </h3>
+            <p className="text-[13px] text-muted-foreground mb-5">
+              Summary of your holdings and performance for {stock.code}
+            </p>
 
-          {userPosition ? (
-            <>
+            <div>
               {/* Allocation Summary Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-5">
                 <div className="bg-accent/30 rounded-xl p-4">
                   <p className="text-[12px] text-muted-foreground mb-1 flex items-center gap-1">
                     <DollarSign className="w-3.5 h-3.5" />
@@ -275,15 +288,6 @@ export default function StockDetail() {
                 </div>
 
                 <div className="bg-accent/30 rounded-xl p-4">
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    Current Value
-                  </p>
-                  <p className="text-[20px] md:text-[24px] font-bold text-foreground">
-                    ${currentValue.toLocaleString()}
-                  </p>
-                </div>
-
-                <div className="bg-accent/30 rounded-xl p-4">
                   <p className="text-[12px] text-muted-foreground mb-1 flex items-center gap-1">
                     {isProfitable ? (
                       <TrendingUpIcon className="w-3.5 h-3.5" />
@@ -293,71 +297,19 @@ export default function StockDetail() {
                     Unrealized P/L
                   </p>
                   <p
-                    className={`text-[24px] md:text-[28px] font-bold ${
+                    className={`flex items-center gap-2 ${
                       isProfitable ? "text-success" : "text-destructive"
                     }`}
                   >
-                    {isProfitable ? "+" : ""}$
-                    {Math.abs(userPosition.profitLoss).toLocaleString()}
+                    <span className="text-[24px] md:text-[28px] font-bold">
+                      {isProfitable ? "+" : ""}$
+                      {Math.abs(userPosition.profitLoss).toLocaleString()}
+                    </span>
+                    <span>
+                      ({isProfitable ? "+" : ""}
+                      {userPosition.profitLossPercent.toFixed(2)}% )
+                    </span>
                   </p>
-                </div>
-
-                <div className="bg-accent/30 rounded-xl p-4">
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    P/L Percentage
-                  </p>
-                  <p
-                    className={`text-[24px] md:text-[28px] font-bold ${
-                      isProfitable ? "text-success" : "text-destructive"
-                    }`}
-                  >
-                    {isProfitable ? "+" : ""}
-                    {userPosition.profitLossPercent.toFixed(2)}%
-                  </p>
-                </div>
-              </div>
-
-              {/* Mini Performance Bar */}
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[12px] text-muted-foreground">
-                    Invested
-                  </span>
-                  <span className="text-[12px] text-muted-foreground">
-                    Current Value
-                  </span>
-                </div>
-                <div className="relative w-full h-3 bg-muted/30 rounded-full overflow-hidden">
-                  <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all ${
-                      isProfitable
-                        ? "bg-gradient-to-r from-success/50 to-success"
-                        : "bg-gradient-to-r from-destructive/50 to-destructive"
-                    }`}
-                    style={{
-                      width: isProfitable
-                        ? `${Math.min(
-                            (currentValue / userPosition.totalBuy) * 100,
-                            100
-                          )}%`
-                        : `${Math.max(
-                            (currentValue / userPosition.totalBuy) * 100,
-                            0
-                          )}%`,
-                    }}
-                  />
-                </div>
-                <div className="flex justify-between items-center mt-2">
-                  <span className="text-[13px] font-medium text-foreground">
-                    ${userPosition.totalBuy.toLocaleString()}
-                  </span>
-                  <span
-                    className={`text-[13px] font-bold ${
-                      isProfitable ? "text-success" : "text-destructive"
-                    }`}
-                  >
-                    ${currentValue.toLocaleString()}
-                  </span>
                 </div>
               </div>
 
@@ -370,28 +322,9 @@ export default function StockDetail() {
                   price. This changes in real-time with the stock price.
                 </p>
               </div>
-            </>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 rounded-2xl bg-muted/30 flex items-center justify-center mx-auto mb-4">
-                <Wallet className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <p className="text-[16px] font-medium text-foreground mb-2">
-                You don&apos;t have a position in this stock yet
-              </p>
-              <p className="text-[14px] text-muted-foreground mb-5">
-                Start investing by creating your first order
-              </p>
-              <Button
-                variant="primary"
-                onClick={() => router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)}
-              >
-                <Plus className="w-4 h-4 mr-1.5" />
-                Create First Order
-              </Button>
             </div>
-          )}
-        </GlassCard>
+          </GlassCard>
+        )}
 
         {/* Stock Performance Chart */}
         <GlassCard className="p-5 md:p-6">

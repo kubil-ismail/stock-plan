@@ -223,7 +223,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               <div className="relative">
                 <button
                   onClick={handleNotificationClick}
-                  className="relative p-2 rounded-[10px] text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
+                  className="relative p-2 rounded-[10px] text-muted-foreground hover:text-foreground hover:bg-accent transition-all cursor-pointer"
                 >
                   <Bell className="w-5 h-5" />
                   {hasNewNotifications && (
@@ -239,7 +239,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
 
               <Link href={PR_PATH_PROFILE} onClick={handleProfileClick}>
-                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                <button className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center font-semibold text-[14px] text-primary">
                     JD
                   </div>

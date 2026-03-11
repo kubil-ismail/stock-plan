@@ -262,7 +262,7 @@ export default function Profile() {
         {/* Add Broker Button - Inside Card */}
         <Button
           variant="outline"
-          className="w-full justify-center"
+          className="w-full flex items-center justify-center"
           onClick={() => setIsAddBrokerOpen(true)}
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -296,18 +296,6 @@ export default function Profile() {
               </div>
             );
           })}
-        </div>
-      </GlassCard>
-
-      {/* Security */}
-      <GlassCard className="p-6">
-        <h2 className="text-[20px] font-semibold text-foreground mb-6">
-          Security
-        </h2>
-        <div className="space-y-3">
-          <Button variant="outline" className="w-full justify-start">
-            Change Password
-          </Button>
         </div>
       </GlassCard>
 

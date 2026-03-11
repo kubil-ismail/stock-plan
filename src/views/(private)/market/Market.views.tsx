@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import { useState, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -5,8 +6,6 @@ import { GlassCard } from "@/components/glass-card";
 import { Badge } from "@/components/badge";
 import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
 import {
-  TrendingUp,
-  TrendingDown,
   BarChart3,
   ArrowUpDown,
   Search,
@@ -21,7 +20,7 @@ import {
 } from "lucide-react";
 import { mockIndexes, mockSectors, mockStocks } from "@/lib/mock-data";
 import { toast } from "sonner";
-import { PB_PATH_INDEXES, PB_PATH_MARKET, PB_PATH_SECTORS, PB_PATH_STOCKS } from "@/lib/route";
+import { PB_PATH_INDEXES, PB_PATH_SECTORS, PB_PATH_STOCKS } from "@/lib/route";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
 type SortOption =
@@ -47,7 +46,7 @@ const sectorIcons: Record<string, any> = {
 };
 
 export default function Market() {
-  const navigate = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const filterParam = searchParams.get("filter");
@@ -100,9 +99,6 @@ export default function Market() {
       return newBookmarks;
     });
   };
-
-  // Calculate sector performance
-  const topSectors = mockSectors.slice(0, 6);
 
   // Filter and sort stocks
   const filteredAndSortedStocks = useMemo(() => {
@@ -290,7 +286,7 @@ export default function Market() {
       <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0">
         <button
           onClick={() => setActiveTab("indexes")}
-          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap ${
+          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap cursor-pointer ${
             activeTab === "indexes"
               ? "bg-primary text-primary-foreground"
               : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
@@ -300,7 +296,7 @@ export default function Market() {
         </button>
         <button
           onClick={() => setActiveTab("sectors")}
-          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap ${
+          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap cursor-pointer ${
             activeTab === "sectors"
               ? "bg-primary text-primary-foreground"
               : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
@@ -310,18 +306,13 @@ export default function Market() {
         </button>
         <button
           onClick={() => setActiveTab("stocks")}
-          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap ${
+          className={`px-5 py-2.5 rounded-[10px] text-[14px] font-medium transition-all whitespace-nowrap cursor-pointer ${
             activeTab === "stocks"
               ? "bg-primary text-primary-foreground"
               : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
           }`}
         >
           Stocks
-          {bookmarkedStocks.length > 0 && (
-            <span className="ml-2 px-2 py-0.5 rounded-full bg-primary-foreground/20 text-[11px] font-bold">
-              {bookmarkedStocks.length}
-            </span>
-          )}
         </button>
       </div>
 
@@ -344,7 +335,9 @@ export default function Market() {
                         ? "hover:bg-success/5"
                         : "hover:bg-destructive/5"
                     }`}
-                    onClick={() => navigate.push(`${PB_PATH_INDEXES}/${index.id}`)}
+                    onClick={() =>
+                      router.push(`${PB_PATH_INDEXES}/${index.id}`)
+                    }
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div>
@@ -392,126 +385,12 @@ export default function Market() {
               })}
             </div>
           </div>
-
-          {/* Index Performance Summary */}
-          <GlassCard className="p-6">
-            <h3 className="text-[18px] font-semibold text-foreground mb-4">
-              Today&apos;s Market Summary
-            </h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-4 rounded-xl bg-success/10">
-                <p className="text-[12px] text-muted-foreground mb-1">
-                  Advancing
-                </p>
-                <p className="text-[24px] font-bold text-success">342</p>
-                <p className="text-[12px] text-muted-foreground mt-1">stocks</p>
-              </div>
-              <div className="p-4 rounded-xl bg-destructive/10">
-                <p className="text-[12px] text-muted-foreground mb-1">
-                  Declining
-                </p>
-                <p className="text-[24px] font-bold text-destructive">186</p>
-                <p className="text-[12px] text-muted-foreground mt-1">stocks</p>
-              </div>
-              <div className="p-4 rounded-xl bg-muted/20">
-                <p className="text-[12px] text-muted-foreground mb-1">
-                  Unchanged
-                </p>
-                <p className="text-[24px] font-bold text-foreground">42</p>
-                <p className="text-[12px] text-muted-foreground mt-1">stocks</p>
-              </div>
-              <div className="p-4 rounded-xl bg-primary/10">
-                <p className="text-[12px] text-muted-foreground mb-1">Volume</p>
-                <p className="text-[20px] font-bold text-primary">8.2B</p>
-                <p className="text-[12px] text-muted-foreground mt-1">shares</p>
-              </div>
-            </div>
-          </GlassCard>
         </div>
       )}
 
       {/* Sectors Section */}
       {activeTab === "sectors" && (
         <div className="space-y-6 animate-fade-in">
-          {/* Top Sectors */}
-          <div>
-            <h2 className="text-[20px] font-semibold text-foreground mb-4">
-              Top Sectors
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {topSectors.map((sector) => {
-                const isPositive = sector.changePercent >= 0;
-                const advancingCount = Math.floor(Math.random() * 15) + 5;
-                const decliningCount = Math.floor(Math.random() * 10) + 2;
-
-                return (
-                  <GlassCard
-                    key={sector.id}
-                    className={`p-5 cursor-pointer transition-all ${
-                      isPositive
-                        ? "hover:bg-success/5"
-                        : "hover:bg-destructive/5"
-                    }`}
-                    onClick={() =>
-                      navigate.push(`${PB_PATH_SECTORS}/${sector.id}`)
-                    }
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <p className="text-[16px] font-bold text-foreground mb-1">
-                          {sector.name}
-                        </p>
-                        <p className="text-[13px] text-muted-foreground">
-                          {sector.stockCount} stocks
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <div
-                        className={`text-[28px] font-bold ${
-                          isPositive ? "text-success" : "text-destructive"
-                        }`}
-                      >
-                        <span>{isPositive ? "▲" : "▼"}</span>
-                        <span className="ml-1">
-                          {isPositive ? "+" : ""}
-                          {sector.changePercent.toFixed(2)}%
-                        </span>
-                      </div>
-                      <p className="text-[13px] text-muted-foreground mt-1">
-                        Average change
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-4 pt-3 border-t border-border">
-                      <div className="flex items-center gap-1.5 text-[13px]">
-                        <span className="text-success font-bold">
-                          {advancingCount}
-                        </span>
-                        <TrendingUp className="w-3.5 h-3.5 text-success" />
-                      </div>
-                      <div className="flex items-center gap-1.5 text-[13px]">
-                        <span className="text-destructive font-bold">
-                          {decliningCount}
-                        </span>
-                        <TrendingDown className="w-3.5 h-3.5 text-destructive" />
-                      </div>
-                      <div className="ml-auto">
-                        <Badge
-                          variant={isPositive ? "default" : "destructive"}
-                          size="sm"
-                        >
-                          {isPositive ? "Leading" : "Lagging"}
-                        </Badge>
-                      </div>
-                    </div>
-                  </GlassCard>
-                );
-              })}
-            </div>
-          </div>
-
           {/* All Sectors List */}
           <div>
             <h2 className="text-[20px] font-semibold text-foreground mb-4">
@@ -531,7 +410,7 @@ export default function Market() {
                         : "hover:bg-destructive/5"
                     }`}
                     onClick={() =>
-                      navigate.push(`${PB_PATH_SECTORS}/${sector.id}`)
+                      router.push(`${PB_PATH_SECTORS}/${sector.id}`)
                     }
                   >
                     <div className="flex items-center gap-4">
@@ -608,25 +487,6 @@ export default function Market() {
               </div>
 
               <div className="flex items-center gap-2">
-                {/* Show Bookmarked Only Toggle */}
-                {bookmarkedStocks.length > 0 && (
-                  <button
-                    onClick={() => setStockFilter("bookmark")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-[10px] text-[13px] font-medium transition-all whitespace-nowrap ${
-                      stockFilter === "bookmark"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted/30 text-muted-foreground hover:bg-muted/50"
-                    }`}
-                  >
-                    <Star
-                      className={`w-4 h-4 ${
-                        stockFilter === "bookmark" ? "fill-current" : ""
-                      }`}
-                    />
-                    Bookmarked
-                  </button>
-                )}
-
                 {/* Sort Button - Mobile (Bottom Sheet) */}
                 <button
                   onClick={() => setShowSortMenu(true)}
@@ -690,106 +550,7 @@ export default function Market() {
                 </div>
               </div>
             </div>
-
-            {/* Section Header */}
-            <div className="flex items-center justify-between">
-              <h2 className="text-[20px] font-semibold text-foreground">
-                {stockFilter === "bookmark" ? (
-                  <span className="flex items-center gap-2">
-                    <Star className="w-5 h-5 fill-primary text-primary" />
-                    Bookmarked Stocks ({filteredAndSortedStocks.length})
-                  </span>
-                ) : (
-                  `Stocks (${filteredAndSortedStocks.length})`
-                )}
-              </h2>
-            </div>
           </div>
-
-          {/* Bookmarked Section - Only show if not in bookmarked-only mode */}
-          {stockFilter !== "bookmark" && bookmarkedStocks.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
-                  <Star className="w-4 h-4 fill-primary text-primary" />
-                  Bookmarked ({bookmarkedStocks.length})
-                </h3>
-                <button
-                  onClick={() => setStockFilter("bookmark")}
-                  className="text-[13px] text-primary hover:text-primary/80 font-medium transition-colors"
-                >
-                  View All
-                </button>
-              </div>
-
-              {/* Horizontal Scroll on Mobile, Grid on Desktop */}
-              <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 pb-2">
-                <div className="flex md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-                  {bookmarkedStocks.slice(0, 6).map((stockId) => {
-                    const stock = mockStocks.find((s) => s.id === stockId);
-                    if (!stock) return null;
-                    const isPositive = stock.changePercent >= 0;
-
-                    return (
-                      <GlassCard
-                        key={stock.id}
-                        className={`flex-shrink-0 w-[280px] md:w-auto p-4 cursor-pointer transition-all relative group ${
-                          isPositive
-                            ? "hover:bg-success/5"
-                            : "hover:bg-destructive/5"
-                        }`}
-                        onClick={() =>
-                          navigate.push(`${PB_PATH_STOCKS}/${stock.id}`)
-                        }
-                      >
-                        {/* Remove Bookmark Button */}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            toggleBookmark(stock.id, stock.code);
-                          }}
-                          className="absolute top-3 right-3 p-1.5 rounded-lg bg-background/50 hover:bg-background transition-all opacity-0 group-hover:opacity-100"
-                        >
-                          <X className="w-3.5 h-3.5 text-muted-foreground hover:text-foreground" />
-                        </button>
-
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
-                            <span className="text-[14px] font-bold text-primary">
-                              {stock.code.substring(0, 2)}
-                            </span>
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-[14px] font-bold text-foreground mb-0.5">
-                              {stock.code}
-                            </h4>
-                            <p className="text-[11px] text-muted-foreground truncate">
-                              {stock.name}
-                            </p>
-                          </div>
-
-                          <div className="text-right flex-shrink-0">
-                            <p className="text-[15px] font-bold text-foreground mb-0.5">
-                              ${stock.price.toFixed(2)}
-                            </p>
-                            <div
-                              className={`text-[12px] font-bold ${
-                                isPositive ? "text-success" : "text-destructive"
-                              }`}
-                            >
-                              {isPositive ? "▲" : "▼"} {isPositive ? "+" : ""}
-                              {stock.changePercent.toFixed(2)}%
-                            </div>
-                          </div>
-                        </div>
-                      </GlassCard>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Stock Filter Tabs - Mobile: Soft Pill Style */}
           <div className="md:hidden sticky top-14 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b border-border z-30">
@@ -895,7 +656,7 @@ export default function Market() {
                     }`}
                     style={{ animationDelay: `${index * 20}ms` }}
                     onClick={() =>
-                      navigate.push(`${PB_PATH_STOCKS}/${stock.id}`)
+                      router.push(`${PB_PATH_STOCKS}/${stock.id}`)
                     }
                   >
                     <div className="flex items-center gap-4">
