@@ -228,7 +228,7 @@ export default function OrderDetail() {
                   Execution Date
                 </p>
                 <p className="text-[15px] font-semibold text-foreground">
-                  {order?.date ?? ''}
+                  {/* {order?.cdate ?? ''} */}
                 </p>
               </div>
             </>

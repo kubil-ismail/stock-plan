@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { GlassCard } from "@/components/glass-card";
 import { Button } from "@/components/button";
 import { Badge } from "@/components/badge";
@@ -17,6 +17,14 @@ import { PR_PATH_PORTO, PR_PATH_PROFILE } from "@/lib/route";
 import Link from "next/link";
 
 export default function AddOrder() {
+  return (
+    <Suspense>
+      <AddOrderContent />
+    </Suspense>
+  );
+}
+
+function AddOrderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 

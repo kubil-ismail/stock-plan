@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { GlassCard } from "@/components/glass-card";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
@@ -28,6 +28,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
 
 export default function Profile() {
+  return (
+    <Suspense>
+      <ProfileContent />
+    </Suspense>
+  );
+}
+
+function ProfileContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { logout } = useAuth();

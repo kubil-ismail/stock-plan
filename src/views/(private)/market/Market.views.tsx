@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { GlassCard } from "@/components/glass-card";
 import { Badge } from "@/components/badge";
@@ -46,6 +46,14 @@ const sectorIcons: Record<string, any> = {
 };
 
 export default function Market() {
+  return (
+    <Suspense fallback={<div />}>
+      <MarketContent />
+    </Suspense>
+  );
+}
+
+function MarketContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
@@ -515,18 +523,27 @@ export default function Market() {
                       <div className="absolute right-0 top-full mt-2 w-56 z-50 animate-fade-in">
                         <div className="bg-white rounded-[12px] p-2 shadow-lg">
                           {[
-                            { value: "price-asc", label: "Price (Low → High)" },
+                            {
+                              value: "price-asc",
+                              label: "Price (Low → High)",
+                            },
                             {
                               value: "price-desc",
                               label: "Price (High → Low)",
                             },
-                            { value: "change-asc", label: "% Change (Lowest)" },
+                            {
+                              value: "change-asc",
+                              label: "% Change (Lowest)",
+                            },
                             {
                               value: "change-desc",
                               label: "% Change (Highest)",
                             },
                             { value: "volume-asc", label: "Volume (Lowest)" },
-                            { value: "volume-desc", label: "Volume (Highest)" },
+                            {
+                              value: "volume-desc",
+                              label: "Volume (Highest)",
+                            },
                           ].map((option) => (
                             <button
                               key={option.value}
@@ -655,9 +672,7 @@ export default function Market() {
                         : "hover:bg-destructive/5"
                     }`}
                     style={{ animationDelay: `${index * 20}ms` }}
-                    onClick={() =>
-                      router.push(`${PB_PATH_STOCKS}/${stock.id}`)
-                    }
+                    onClick={() => router.push(`${PB_PATH_STOCKS}/${stock.id}`)}
                   >
                     <div className="flex items-center gap-4">
                       {/* Stock Logo */}

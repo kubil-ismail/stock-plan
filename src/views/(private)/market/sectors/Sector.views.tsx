@@ -229,10 +229,10 @@ export function SectorDetail() {
           Back to Sectors
         </Link>
         <h1 className="text-[32px] font-bold text-foreground mb-2">
-          {sector.name}
+          {sector?.name}
         </h1>
         <p className="text-[14px] text-muted-foreground">
-          {sector.stockCount} stocks in this sector
+          {sector?.stockCount} stocks in this sector
         </p>
       </div>
 

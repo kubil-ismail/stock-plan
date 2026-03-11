@@ -265,7 +265,7 @@ export default function StockDetail() {
                     Total Buy Amount
                   </p>
                   <p className="text-[20px] md:text-[24px] font-bold text-foreground">
-                    ${userPosition.totalBuy.toLocaleString()}
+                    ${userPosition?.totalBuy.toLocaleString()}
                   </p>
                 </div>
 
@@ -274,7 +274,7 @@ export default function StockDetail() {
                     Average Price
                   </p>
                   <p className="text-[20px] md:text-[24px] font-bold text-primary">
-                    ${userPosition.averagePrice.toFixed(2)}
+                    ${userPosition?.averagePrice.toFixed(2)}
                   </p>
                 </div>
 
@@ -283,7 +283,7 @@ export default function StockDetail() {
                     Total Lot
                   </p>
                   <p className="text-[20px] md:text-[24px] font-bold text-foreground">
-                    {userPosition.totalLot}
+                    {userPosition?.totalLot}
                   </p>
                 </div>
 
@@ -303,11 +303,11 @@ export default function StockDetail() {
                   >
                     <span className="text-[24px] md:text-[28px] font-bold">
                       {isProfitable ? "+" : ""}$
-                      {Math.abs(userPosition.profitLoss).toLocaleString()}
+                      {Math.abs(userPosition?.profitLoss ?? 0).toLocaleString()}
                     </span>
                     <span>
                       ({isProfitable ? "+" : ""}
-                      {userPosition.profitLossPercent.toFixed(2)}% )
+                      {userPosition?.profitLossPercent.toFixed(2)}% )
                     </span>
                   </p>
                 </div>
