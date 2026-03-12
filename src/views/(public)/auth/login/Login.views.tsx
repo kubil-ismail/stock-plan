@@ -1,28 +1,60 @@
 "use client";
+import * as yup from "yup";
 import Link from "next/link";
 import { GlassCard } from "@/components/glass-card";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
-import { useState } from "react";
-import { useAuth } from "@/contexts/auth-context";
-import { useRouter } from "next/navigation";
-import { PB_PATH_AUTH_FORGOT, PB_PATH_AUTH_REGISTER, PB_PATH_MARKET } from "@/lib/route";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useFormik } from "formik";
+import { PB_PATH_AUTH_FORGOT, PB_PATH_AUTH_REGISTER } from "@/lib/route";
+
+const validationSchema = yup.object({
+  email: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup.string().required("Password is required"),
+});
 
 export default function Login() {
   const router = useRouter();
-  const { login } = useAuth();
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const search = useSearchParams();
 
-  // Get return URL from location state or default to market
-  const returnUrl = PB_PATH_MARKET;
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      // alert(JSON.stringify(values, null, 2));
+      return fetch("/api/login", {
+        method: "post",
+        body: JSON.stringify(values),
+      })
+        .then((respone) => respone.json())
+        .then((response) => {
+          if (!response.success) {
+            throw {
+              message: "Email / password not match",
+            };
+          }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Mock login - set authenticated state
-    login();
-    // Redirect to return URL or market
-    router.push(returnUrl);
-  };
+          if (search.size > 0) {
+            router.replace(String(search.get("redirect")));
+            return;
+          }
+
+          router.refresh();
+        })
+        .catch((error) => {
+          formik.setFieldError(
+            "email",
+            error?.message ?? "Something wrong, try again"
+          );
+        });
+    },
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-accent via-background to-secondary/10 flex items-center justify-center px-4">
@@ -44,27 +76,31 @@ export default function Login() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={formik.handleSubmit} className="space-y-5">
             <Input
-              label="Email"
+              id="email"
+              name="email"
               type="email"
+              label="Email"
               placeholder="john@example.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              required
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              errorMsg={formik.errors.email}
             />
 
             <Input
+              id="password"
+              name="password"
               label="Password"
               type="password"
               placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              errorMsg={formik.errors.password}
             />
 
             <div className="flex items-center justify-between">
@@ -82,7 +118,13 @@ export default function Login() {
               </Link>
             </div>
 
-            <Button type="submit" className="w-full" size="lg">
+            <Button
+              type="submit"
+              className="w-full"
+              size="lg"
+              disabled={formik.isSubmitting}
+              loading={formik.isSubmitting}
+            >
               Sign in
             </Button>
           </form>

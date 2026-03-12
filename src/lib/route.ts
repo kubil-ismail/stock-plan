@@ -16,6 +16,9 @@ export const PB_PATH_INDEXES = "/market/indexes";
 export const PB_PATH_SECTORS = "/market/sectors";
 export const PB_PATH_STOCKS = "/market/stocks";
 
+export const PB_PATH_SESSION = "/session";
+
+export const PB_PATH_AUTH_LOGOUT = "/auth/logout";
 export const PB_PATH_AUTH_LOGIN = "/auth/login";
 export const PB_PATH_AUTH_REGISTER = "/auth/register";
 export const PB_PATH_AUTH_RESET = "/auth/reset-password";

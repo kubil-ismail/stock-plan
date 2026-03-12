@@ -1,32 +1,83 @@
 "use client";
+import * as yup from "yup";
 import Link from "next/link";
-import { GlassCard } from "@/components/glass-card";
-import { Button } from "@/components/button";
+import { useFormik } from "formik";
 import { Input } from "@/components/input";
-import { useState } from "react";
-import { useAuth } from "@/contexts/auth-context";
-import { useRouter } from "next/navigation";
-import { PB_PATH_AUTH_LOGIN, PB_PATH_MARKET } from "@/lib/route";
+import { Button } from "@/components/button";
+import { GlassCard } from "@/components/glass-card";
+import { useRouter, useSearchParams } from "next/navigation";
+import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
+
+const validationSchema = yup.object({
+  fullname: yup.string().required("Name is required"),
+  username: yup.string().required("Username is required"),
+  email: yup
+    .string()
+    .email("Enter a valid email")
+    .required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password min 8 character")
+    .required("Password is required"),
+  password2: yup
+    .string()
+    .oneOf([yup.ref("password")], "Password confirmation must match")
+    .required("Password Confirmation is required"),
+});
 
 export default function Register() {
   const router = useRouter();
-  const { login } = useAuth();
-  const [formData, setFormData] = useState({
-    fullname: "",
-    username: "",
-    email: "",
-    password: "",
+  const search = useSearchParams();
+
+  const formik = useFormik({
+    initialValues: {
+      fullname: "",
+      username: "",
+      email: "",
+      password: "",
+      password2: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      // alert(JSON.stringify(values, null, 2));
+      return fetch("/api/register", {
+        method: "post",
+        body: JSON.stringify(values),
+      })
+        .then((respone) => respone.json())
+        .then((response) => {
+          if (!response.success) {
+            throw {
+              message: response?.message,
+            };
+          }
+
+          if (search.size > 0) {
+            router.replace(String(search.get("redirect")));
+            return;
+          }
+
+          router.refresh();
+        })
+        .catch((error) => {
+          handleErrorMessage(error?.message ?? "Something wrong, try again");
+        });
+    },
   });
 
-  // Get return URL from location state or default to market
-  const returnUrl = PB_PATH_MARKET;
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Mock registration - set authenticated state
-    login();
-    // Redirect to return URL or market
-    router.push(returnUrl);
+  const handleErrorMessage = (message: string) => {
+    console.log(message);
+    switch (message) {
+      case "Email already registered":
+        formik.setFieldError("email", message);
+        break;
+      case "Username already registered":
+        formik.setFieldError("username", message);
+        break;
+      default:
+        formik.setFieldError("password2", message);
+        break;
+    }
   };
 
   return (
@@ -49,52 +100,81 @@ export default function Register() {
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={formik.handleSubmit} className="space-y-4">
             <Input
+              id="fullname"
+              name="fullname"
               label="Full Name"
               type="text"
               placeholder="John Doe"
-              value={formData.fullname}
-              onChange={(e) =>
-                setFormData({ ...formData, fullname: e.target.value })
-              }
-              required
+              value={formik.values.fullname}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.fullname && Boolean(formik.errors.fullname)}
+              errorMsg={formik.errors.fullname}
             />
 
             <Input
+              id="username"
+              name="username"
               label="Username"
               type="text"
               placeholder="johndoe"
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
-              required
+              value={formik.values.username}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.username && Boolean(formik.errors.username)}
+              errorMsg={formik.errors.username}
             />
 
             <Input
+              id="email"
+              name="email"
               label="Email"
               type="email"
               placeholder="john@example.com"
-              value={formData.email}
-              onChange={(e) =>
-                setFormData({ ...formData, email: e.target.value })
-              }
-              required
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              errorMsg={formik.errors.email}
             />
 
             <Input
+              id="password"
+              name="password"
               label="Password"
               type="password"
               placeholder="••••••••"
-              value={formData.password}
-              onChange={(e) =>
-                setFormData({ ...formData, password: e.target.value })
-              }
-              required
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              errorMsg={formik.errors.password}
             />
 
-            <Button type="submit" className="w-full mt-6" size="lg">
+            <Input
+              id="password2"
+              name="password2"
+              label="Password Confirmation"
+              type="password"
+              placeholder="••••••••"
+              value={formik.values.password2}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={
+                formik.touched.password2 && Boolean(formik.errors.password2)
+              }
+              errorMsg={formik.errors.password2}
+            />
+
+            <Button
+              type="submit"
+              className="w-full mt-6"
+              size="lg"
+              disabled={formik.isSubmitting}
+              loading={formik.isSubmitting}
+            >
               Create account
             </Button>
           </form>

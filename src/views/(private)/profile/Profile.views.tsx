@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, useState } from "react";
+import { useState } from "react";
 import { GlassCard } from "@/components/glass-card";
 import { Button } from "@/components/button";
 import { Input } from "@/components/input";
@@ -23,27 +23,18 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/auth-context";
 import { useRouter, useSearchParams } from "next/navigation";
-import { PB_PATH_AUTH_LOGIN } from "@/lib/route";
+import { PB_PATH_AUTH_LOGOUT } from "@/lib/route";
 
-export default function Profile() {
-  return (
-    <Suspense>
-      <ProfileContent />
-    </Suspense>
-  );
-}
-
-function ProfileContent() {
+export default function Profile({ response }: any) {
+  const { profile } = response;
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { logout } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    fullname: "John Doe",
-    username: "johndoe",
-    email: "john@example.com",
+    fullname: profile?.fullname,
+    username: profile?.username,
+    email: profile?.email,
   });
 
   // Broker management state
@@ -313,9 +304,7 @@ function ProfileContent() {
           variant="outline"
           className="w-full justify-center text-destructive hover:text-destructive hover:bg-destructive/5 flex items-center gap-2"
           onClick={() => {
-            logout();
-            router.push(PB_PATH_AUTH_LOGIN);
-            toast.success("Logged out successfully");
+            router.push(PB_PATH_AUTH_LOGOUT);
           }}
         >
           <LogOut className="w-4 h-4" />
