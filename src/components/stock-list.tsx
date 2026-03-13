@@ -3,7 +3,7 @@ import { GlassCard } from "./glass-card";
 import { PB_PATH_STOCKS } from "@/lib/route";
 import { useRouter } from "next/navigation";
 import { Badge } from "./badge";
-import { Star } from "lucide-react";
+// import { Star } from "lucide-react";
 
 interface Props {
   stock: any;
@@ -16,7 +16,7 @@ function Stock_list(props: Props) {
   const router = useRouter();
 
   const isPositive = stock.changePercent >= 0;
-  const isBookmarked = false;
+  // const isBookmarked = false;
   const volume = 0;
   const marketCap = 0;
 
@@ -61,9 +61,9 @@ function Stock_list(props: Props) {
 
             {/* Price Info and Bookmark */}
             <div className="flex items-start gap-3 flex-shrink-0">
-              <div className="text-right">
+              {/* <div className="text-right">
                 <p className="text-[18px] md:text-[20px] font-bold text-foreground mb-1">
-                  {/* ${stock?.price?.toFixed(2)} */}
+                  ${stock?.price?.toFixed(2)}
                 </p>
                 <div
                   className={`flex items-center justify-end gap-1.5 text-[14px] font-bold ${
@@ -73,7 +73,7 @@ function Stock_list(props: Props) {
                   <span>{isPositive ? "▲" : "▼"}</span>
                   <span>
                     {isPositive ? "+" : ""}$
-                    {/* {Math.abs(stock?.change).toFixed(2)} */}
+                    {Math.abs(stock?.change).toFixed(2)}
                   </span>
                 </div>
                 <div
@@ -82,12 +82,12 @@ function Stock_list(props: Props) {
                   }`}
                 >
                   {isPositive ? "+" : ""}
-                  {/* {stock?.changePercent?.toFixed(2)}% */}
+                  {stock?.changePercent?.toFixed(2)}%
                 </div>
-              </div>
+              </div> */}
 
               {/* Bookmark Button */}
-              <button
+              {/* <button
                 onClick={(e) => {
                   e.stopPropagation();
                 //   toggleBookmark(stock?.id, stock?.code);
@@ -101,7 +101,7 @@ function Stock_list(props: Props) {
                       : "text-muted-foreground hover:text-primary"
                   }`}
                 />
-              </button>
+              </button> */}
             </div>
           </div>
         </div>

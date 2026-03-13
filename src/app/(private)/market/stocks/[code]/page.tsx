@@ -1,4 +1,4 @@
-import StockDetail from "@/views/(private)/market/stocks/Stocks.views";
+import StockDetail from "@/views/(private)/market/stocks/Detail.views";
 
 function Page() {
   return <StockDetail />;

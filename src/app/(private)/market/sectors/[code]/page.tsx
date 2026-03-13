@@ -1,4 +1,4 @@
-import { SectorDetail } from "@/views/(private)/market/sectors/Sector.views";
+import { SectorDetail } from "@/views/(private)/market/sectors/Detail.views";
 import { get_companies } from "@/services/company";
 
 async function Page() {
