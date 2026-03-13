@@ -1,34 +1,36 @@
 "use client";
-import { useState, useEffect, useMemo } from "react";
-import { GlassCard } from "@/components/glass-card";
-import { ArrowLeft, ArrowUpDown, Search, StarIcon, XIcon } from "lucide-react";
-import { mockStocks, mockSectors } from "@/lib/mock-data";
-import { useDetailNavbar } from "@/contexts/detail-navbar-context";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PB_PATH_MARKET, PB_PATH_STOCKS } from "@/lib/route";
-import { Badge } from "@/components/badge";
 import Stock_list from "@/components/stock-list";
+import { ArrowLeft, ArrowUpDown, Search, StarIcon, XIcon } from "lucide-react";
+import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
+import { useDetailNavbar } from "@/contexts/detail-navbar-context";
+import { GlassCard } from "@/components/glass-card";
+import { useSearchParams } from "next/navigation";
+import { StocksResponse } from "@/types/company";
+import { useState, useEffect } from "react";
+import { PB_PATH_SECTORS } from "@/lib/route";
+import { Button } from "@/components/button";
+import { SectorResponse } from "@/types/general";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
-type SortOption =
-  | "price-asc"
-  | "price-desc"
-  | "change-asc"
-  | "change-desc"
-  | "volume-asc"
-  | "volume-desc";
 
-export function SectorDetail({ response }: any) {
-  const { code } = useParams();
-  const { companies } = response;
+interface Response {
+  companies: StocksResponse;
+  general_sector: SectorResponse;
+}
+
+interface Props {
+  response: Response;
+}
+
+export function SectorDetail(props: Props) {
+  const { companies, general_sector } = props?.response || {};
 
   const searchParams = useSearchParams();
   const filterParam = searchParams.get("filter");
+  const sector = general_sector?.data?.[0];
 
-  const router = useRouter();
   const [searchCode, setSearchCode] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("price-desc");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [bookmarkedStocks, setBookmarkedStocks] = useState<string[]>([]);
 
@@ -37,177 +39,8 @@ export function SectorDetail({ response }: any) {
   );
   const { setNavbar, clearNavbar } = useDetailNavbar();
 
-  const sector = mockSectors.find((s) => s.id === code);
-
   // Filter and sort stocks
-  const filteredAndSortedStocks = useMemo(() => {
-    let filtered = [...companies];
-
-    // Apply search filter by code
-    if (searchCode) {
-      const searchUpper = searchCode.toUpperCase();
-      filtered = filtered.filter((s) =>
-        s.code.toUpperCase().includes(searchUpper)
-      );
-    }
-
-    // Helper function to parse volume string to number
-    const parseVolume = (volumeStr: string): number => {
-      const value = parseFloat(volumeStr);
-      if (volumeStr.includes("M")) return value * 1000000;
-      if (volumeStr.includes("B")) return value * 1000000000;
-      return value;
-    };
-
-    // Apply tab filter and sorting
-    switch (stockFilter) {
-      case "gainers":
-        filtered = filtered.filter((s) => s.changePercent > 0);
-        // Apply sorting for gainers tab
-        switch (sortBy) {
-          case "price-asc":
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-          case "price-desc":
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-          case "change-asc":
-            filtered.sort((a, b) => a.changePercent - b.changePercent);
-            break;
-          case "change-desc":
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-          case "volume-asc":
-            filtered.sort(
-              (a, b) => parseVolume(a.volume) - parseVolume(b.volume)
-            );
-            break;
-          case "volume-desc":
-            filtered.sort(
-              (a, b) => parseVolume(b.volume) - parseVolume(a.volume)
-            );
-            break;
-        }
-        break;
-      case "losers":
-        filtered = filtered.filter((s) => s.changePercent < 0);
-        // Apply sorting for losers tab
-        switch (sortBy) {
-          case "price-asc":
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-          case "price-desc":
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-          case "change-asc":
-            filtered.sort((a, b) => a.changePercent - b.changePercent);
-            break;
-          case "change-desc":
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-          case "volume-asc":
-            filtered.sort(
-              (a, b) => parseVolume(a.volume) - parseVolume(b.volume)
-            );
-            break;
-          case "volume-desc":
-            filtered.sort(
-              (a, b) => parseVolume(b.volume) - parseVolume(a.volume)
-            );
-            break;
-        }
-        break;
-      case "active":
-        // Apply sorting for most active tab
-        switch (sortBy) {
-          case "price-asc":
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-          case "price-desc":
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-          case "change-asc":
-            filtered.sort((a, b) => a.changePercent - b.changePercent);
-            break;
-          case "change-desc":
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-          case "volume-asc":
-            filtered.sort(
-              (a, b) => parseVolume(a.volume) - parseVolume(b.volume)
-            );
-            break;
-          case "volume-desc":
-          default:
-            filtered.sort(
-              (a, b) => parseVolume(b.volume) - parseVolume(a.volume)
-            );
-            break;
-        }
-        break;
-      case "bookmark":
-        filtered = filtered.filter((s) => bookmarkedStocks.includes(s.id));
-        // Apply sorting for bookmark tab
-        switch (sortBy) {
-          case "price-asc":
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-          case "price-desc":
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-          case "change-asc":
-            filtered.sort((a, b) => a.changePercent - b.changePercent);
-            break;
-          case "change-desc":
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-          case "volume-asc":
-            filtered.sort(
-              (a, b) => parseVolume(a.volume) - parseVolume(b.volume)
-            );
-            break;
-          case "volume-desc":
-            filtered.sort(
-              (a, b) => parseVolume(b.volume) - parseVolume(a.volume)
-            );
-            break;
-        }
-        break;
-      case "all":
-      default:
-        // Apply sorting for all tab
-        switch (sortBy) {
-          case "price-asc":
-            filtered.sort((a, b) => a.price - b.price);
-            break;
-          case "price-desc":
-            filtered.sort((a, b) => b.price - a.price);
-            break;
-          case "change-asc":
-            filtered.sort((a, b) => a.changePercent - b.changePercent);
-            break;
-          case "change-desc":
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-          case "volume-asc":
-            filtered.sort(
-              (a, b) => parseVolume(a.volume) - parseVolume(b.volume)
-            );
-            break;
-          case "volume-desc":
-            filtered.sort(
-              (a, b) => parseVolume(b.volume) - parseVolume(a.volume)
-            );
-            break;
-          default:
-            filtered.sort((a, b) => b.changePercent - a.changePercent);
-            break;
-        }
-        break;
-    }
-
-    return filtered.slice(0, 50); // Show first 50 stocks
-  }, [stockFilter, sortBy, searchCode, bookmarkedStocks]);
+  const filteredAndSortedStocks = companies.data;
 
   // Set detail navbar title
   useEffect(() => {
@@ -224,7 +57,7 @@ export function SectorDetail({ response }: any) {
       {/* Header - Desktop Only */}
       <div className="hidden md:block">
         <Link
-          href={PB_PATH_MARKET}
+          href={PB_PATH_SECTORS}
           className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -234,7 +67,7 @@ export function SectorDetail({ response }: any) {
           {sector?.name}
         </h1>
         <p className="text-[14px] text-muted-foreground">
-          {sector?.stockCount} stocks in this sector
+          {sector?.total_companies} stocks in this sector
         </p>
       </div>
 
@@ -274,13 +107,65 @@ export function SectorDetail({ response }: any) {
 
               {/* Sort Dropdown - Desktop Only */}
               <div className="hidden md:block relative">
-                <button
+                <Button
+                  variant="secondary"
                   onClick={() => setShowSortMenu(!showSortMenu)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-[10px] bg-muted/30 hover:bg-muted/50 text-[13px] font-medium text-foreground transition-all whitespace-nowrap"
                 >
                   <ArrowUpDown className="w-4 h-4" />
                   Sort
-                </button>
+                </Button>
+
+                {showSortMenu && (
+                  <>
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowSortMenu(false)}
+                    />
+                    <div className="absolute right-0 top-full mt-2 w-56 z-50 animate-fade-in">
+                      <div className="bg-white rounded-[12px] p-2 shadow-lg">
+                        {[
+                          {
+                            value: "price-asc",
+                            label: "Price (Low → High)",
+                          },
+                          {
+                            value: "price-desc",
+                            label: "Price (High → Low)",
+                          },
+                          {
+                            value: "change-asc",
+                            label: "% Change (Lowest)",
+                          },
+                          {
+                            value: "change-desc",
+                            label: "% Change (Highest)",
+                          },
+                          { value: "volume-asc", label: "Volume (Lowest)" },
+                          {
+                            value: "volume-desc",
+                            label: "Volume (Highest)",
+                          },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setShowSortMenu(false);
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-[8px] text-[13px] font-medium transition-all 
+                                     
+                                     `}
+                          >
+                            {/* $
+                                     {sortBy === option.value
+                                       ? "bg-primary text-primary-foreground"
+                                       : "text-foreground hover:bg-muted/30"} */}
+                            {option.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -387,6 +272,31 @@ export function SectorDetail({ response }: any) {
             </p>
           </div>
         )}
+
+        {/* Mobile Sort Bottom Sheet */}
+        <BottomSheet
+          isOpen={showSortMenu}
+          onClose={() => setShowSortMenu(false)}
+          title="Sort By"
+        >
+          {[
+            { value: "price-asc", label: "Price (Low → High)" },
+            { value: "price-desc", label: "Price (High → Low)" },
+            { value: "change-asc", label: "% Change (Lowest)" },
+            { value: "change-desc", label: "% Change (Highest)" },
+            { value: "volume-asc", label: "Volume (Lowest)" },
+            { value: "volume-desc", label: "Volume (Highest)" },
+          ].map((option) => (
+            <BottomSheetOption
+              key={option.value}
+              label={option.label}
+              isSelected={false}
+              onClick={() => {
+                setShowSortMenu(false);
+              }}
+            />
+          ))}
+        </BottomSheet>
       </div>
     </div>
   );

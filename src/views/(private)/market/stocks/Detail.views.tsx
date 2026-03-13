@@ -44,7 +44,7 @@ import {
 } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter } from "next/navigation";
-import { PB_PATH_MARKET, PR_PATH_ORDER_ADD } from "@/lib/route";
+import { PB_PATH_MARKET, PB_PATH_STOCKS, PR_PATH_ORDER_ADD } from "@/lib/route";
 import Link from "next/link";
 
 // Generate chart data
@@ -115,10 +115,6 @@ export default function StockDetail() {
   const isPositive = stock.change >= 0;
   const isProfitable = userPosition && userPosition.profitLoss >= 0;
 
-  // Calculate current value for allocation section
-  const currentValue = userPosition
-    ? userPosition.totalLot * 100 * userPosition.currentPrice
-    : 0;
 
   // Generate chart data based on time range
   const timeRangeDays: Record<TimeRange, number> = {
@@ -138,7 +134,7 @@ export default function StockDetail() {
       <div className="mx-auto space-y-6 md:space-y-8">
         {/* Back Button - Desktop Only */}
         <Link
-          href={PB_PATH_MARKET}
+          href={PB_PATH_STOCKS}
           className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />

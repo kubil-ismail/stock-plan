@@ -6,11 +6,12 @@ import http from "@/lib/http";
 
 export const get_general_sector = async (
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
+  search: string = ""
 ): Promise<SectorResponse> => {
   try {
     const request = await http.get<SectorResponse>(API_GENERAL_SECTOR, {
-      params: { page, limit },
+      params: { page, limit, search },
     });
 
     return request.data;

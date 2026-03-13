@@ -1,14 +1,12 @@
 "use client";
 import { useState, useEffect, useMemo } from "react";
 import { GlassCard } from "@/components/glass-card";
-import { StockCard } from "@/components/stock-card";
-import { Button } from "@/components/button";
 import { ArrowLeft, ArrowUpDown, Search, StarIcon, XIcon } from "lucide-react";
 import { mockStocks, mockIndexes } from "@/lib/mock-data";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { PB_PATH_MARKET, PB_PATH_STOCKS } from "@/lib/route";
+import { PB_PATH_INDEXES, PB_PATH_STOCKS } from "@/lib/route";
 import { Badge } from "@/components/badge";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
@@ -225,7 +223,7 @@ export default function IndexDetail() {
       {/* Header - Desktop Only */}
       <div className="hidden md:block">
         <Link
-          href={PB_PATH_MARKET}
+          href={PB_PATH_INDEXES}
           className="inline-flex items-center gap-2 text-[14px] text-primary hover:text-primary/80 transition-colors mb-4"
         >
           <ArrowLeft className="w-4 h-4" />

@@ -40,12 +40,13 @@ function SectorList(props: Props) {
   const router = useRouter();
 
   const Icon = sectorIcons[sector.name] || sectorIcons["default"];
+  const pathname = sector.name.toLowerCase()?.split(" ")?.join("-");
 
   return (
     <GlassCard
       key={sector.id}
       className={`p-5 cursor-pointer transition-all hover:bg-destructive/5`}
-      onClick={() => router.push(`${PB_PATH_SECTORS}/${sector.id}`)}
+      onClick={() => router.push(`${PB_PATH_SECTORS}/${pathname}`)}
     >
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
