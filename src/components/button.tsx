@@ -21,9 +21,8 @@ export function Button({
     "rounded-[10px] flex gap-[5px] items-center justify-center font-medium transition-all duration-200 ease-in-out cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed";
 
   const variants = {
-    primary: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
-    secondary:
-      "bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-sm",
+    primary: "bg-primary text-primary-foreground hover:bg-primary/90",
+    secondary: "bg-muted/30 hover:bg-muted/50",
     outline: "border border-border bg-transparent hover:bg-accent",
     ghost: "hover:bg-accent",
   };

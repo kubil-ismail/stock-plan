@@ -28,16 +28,18 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] animate-in fade-in duration-200"
+        className="fixed md:hidden inset-0 bg-black/50 backdrop-blur-sm z-[100] animate-in fade-in duration-200"
         onClick={onClose}
       />
 
       {/* Bottom Sheet */}
-      <div className="fixed bottom-0 left-0 right-0 z-[101] animate-in slide-in-from-bottom duration-300">
+      <div className="fixed md:hidden bottom-0 left-0 right-0 z-[101] animate-in slide-in-from-bottom duration-300">
         <div className="bg-white border-t border-border rounded-t-[24px] shadow-2xl overflow-hidden max-h-[80vh] flex flex-col">
           {/* Header */}
           <div className="flex items-center justify-between p-5 border-b border-border flex-shrink-0">
-            <h3 className="text-[18px] font-semibold text-foreground">{title}</h3>
+            <h3 className="text-[18px] font-semibold text-foreground">
+              {title}
+            </h3>
             <button
               onClick={onClose}
               className="p-1.5 rounded-lg hover:bg-muted/50 transition-colors active:scale-95"
@@ -47,9 +49,7 @@ export function BottomSheet({ isOpen, onClose, title, children }: BottomSheetPro
           </div>
 
           {/* Content - Scrollable */}
-          <div className="overflow-y-auto flex-1 pb-safe">
-            {children}
-          </div>
+          <div className="overflow-y-auto flex-1 pb-safe">{children}</div>
         </div>
       </div>
     </>

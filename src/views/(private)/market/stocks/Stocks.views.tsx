@@ -1,15 +1,21 @@
 "use client";
-import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
-import { GlassCard } from "@/components/glass-card";
 import Stock_list from "@/components/stock-list";
+import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
 import { ArrowUpDown, Search, Star, X } from "lucide-react";
+import { GlassCard } from "@/components/glass-card";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import { StocksResponse } from "@/types/company";
+import { useState } from "react";
+import { Button } from "@/components/button";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
 
+interface Response {
+  companies: StocksResponse;
+}
+
 interface Props {
-  response: any;
+  response: Response;
 }
 
 function Stocks(props: Props) {
@@ -24,7 +30,7 @@ function Stocks(props: Props) {
     (filterParam as StockFilter) || "all"
   );
 
-  const filteredAndSortedStocks = companies;
+  const filteredAndSortedStocks = companies.data;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -44,7 +50,7 @@ function Stocks(props: Props) {
             {searchCode && (
               <button
                 onClick={() => setSearchCode("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -63,14 +69,14 @@ function Stocks(props: Props) {
 
             {/* Sort Dropdown - Desktop Only */}
             <div className="hidden md:block relative">
-              <button
+              <Button
+                variant="secondary"
                 onClick={() => setShowSortMenu(!showSortMenu)}
-                className="flex items-center gap-2 px-4 py-2 rounded-[10px] bg-muted/30 hover:bg-muted/50 text-[13px] font-medium text-foreground transition-all whitespace-nowrap"
               >
                 <ArrowUpDown className="w-4 h-4" />
                 Sort
-              </button>
-
+              </Button>
+              
               {showSortMenu && (
                 <>
                   <div
@@ -169,7 +175,7 @@ function Stocks(props: Props) {
           <button
             key={filter.value}
             onClick={() => setStockFilter(filter.value as StockFilter)}
-            className={`px-4 py-2 rounded-[10px] text-[13px] font-medium transition-all whitespace-nowrap ${
+            className={`px-4 py-2 rounded-[10px] text-[13px] font-medium transition-all whitespace-nowrap cursor-pointer ${
               stockFilter === filter.value
                 ? "bg-primary/10 text-primary border border-primary/20"
                 : "bg-muted/20 text-muted-foreground hover:bg-muted/30"

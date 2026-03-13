@@ -1,12 +1,13 @@
-import React from "react";
+"use client";
 import { GlassCard } from "./glass-card";
 import { PB_PATH_STOCKS } from "@/lib/route";
 import { useRouter } from "next/navigation";
 import { Badge } from "./badge";
+import { Stock } from "@/types/company";
 // import { Star } from "lucide-react";
 
 interface Props {
-  stock: any;
+  stock: Stock;
   index: number;
 }
 
@@ -15,17 +16,13 @@ function Stock_list(props: Props) {
 
   const router = useRouter();
 
-  const isPositive = stock.changePercent >= 0;
-  // const isBookmarked = false;
   const volume = 0;
   const marketCap = 0;
 
   return (
     <GlassCard
       key={stock.id}
-      className={`p-4 md:p-5 cursor-pointer transition-all animate-fade-in group ${
-        isPositive ? "hover:bg-success/5" : "hover:bg-destructive/5"
-      }`}
+      className={`p-4 md:p-5 cursor-pointer transition-all animate-fade-in group hover:bg-destructive/5`}
       style={{ animationDelay: `${index * 20}ms` }}
       onClick={() => router.push(`${PB_PATH_STOCKS}/${stock.ticker}`)}
     >

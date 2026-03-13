@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { GlassCard } from "@/components/glass-card";
 import { PB_PATH_SECTORS } from "@/lib/route";
 import {
@@ -14,12 +13,14 @@ import {
   Factory,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Sector } from "@/types/general";
 
 interface Props {
-  sector: any;
+  sector: Sector;
 }
 
 // Sector icon mapping
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const sectorIcons: Record<string, any> = {
   Teknologi: Cpu,
   Keuangan: Landmark,
@@ -38,15 +39,12 @@ function SectorList(props: Props) {
   const { sector } = props;
   const router = useRouter();
 
-  const isPositive = sector.changePercent >= 0;
   const Icon = sectorIcons[sector.name] || sectorIcons["default"];
 
   return (
     <GlassCard
       key={sector.id}
-      className={`p-5 cursor-pointer transition-all ${
-        isPositive ? "hover:bg-success/5" : "hover:bg-destructive/5"
-      }`}
+      className={`p-5 cursor-pointer transition-all hover:bg-destructive/5`}
       onClick={() => router.push(`${PB_PATH_SECTORS}/${sector.id}`)}
     >
       <div className="flex items-center gap-4">

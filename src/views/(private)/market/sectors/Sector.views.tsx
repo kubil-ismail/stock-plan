@@ -1,8 +1,13 @@
 "use client";
 import SectorList from "@/components/sector-list";
+import { SectorResponse } from "@/types/general";
+
+interface Response {
+  general_sector: SectorResponse;
+}
 
 interface Props {
-  response: any;
+  response: Response;
 }
 
 function Sector(props: Props) {
@@ -16,7 +21,7 @@ function Sector(props: Props) {
           All Sectors
         </h2>
         <div className="space-y-3">
-          {general_sector.map((sector) => (
+          {general_sector.data.map((sector) => (
             <SectorList key={sector.id} sector={sector} />
           ))}
         </div>
