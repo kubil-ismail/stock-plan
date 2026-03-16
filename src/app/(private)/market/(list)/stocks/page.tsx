@@ -8,8 +8,13 @@ export const metadata: Metadata = {
     "Analyze stock performance, price movements, and key market data to make better investment decisions.",
 };
 
-async function Page() {
-  const [req_get_companies] = await Promise.all([get_companies()]);
+interface PageProps {
+  searchParams: { search: string };
+}
+
+async function Page({ searchParams }: PageProps) {
+  const { search } = await searchParams;
+  const [req_get_companies] = await Promise.all([get_companies({ search })]);
 
   return <Stocks response={{ companies: req_get_companies }} />;
 }

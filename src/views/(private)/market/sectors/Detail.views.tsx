@@ -5,11 +5,15 @@ import { ArrowLeft, ArrowUpDown, Search, StarIcon, XIcon } from "lucide-react";
 import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
 import { useDetailNavbar } from "@/contexts/detail-navbar-context";
 import { GlassCard } from "@/components/glass-card";
-import { useSearchParams } from "next/navigation";
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from "next/navigation";
 import { StocksResponse } from "@/types/company";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { PB_PATH_SECTORS } from "@/lib/route";
-import { Button } from "@/components/button";
 import { SectorResponse } from "@/types/general";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
@@ -24,13 +28,19 @@ interface Props {
 }
 
 export function SectorDetail(props: Props) {
+  const { code } = useParams();
   const { companies, general_sector } = props?.response || {};
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const search = useSearchParams();
+  const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
 
   const searchParams = useSearchParams();
   const filterParam = searchParams.get("filter");
   const sector = general_sector?.data?.[0];
+  const searchCode = String(search.get("search") ?? "");
 
-  const [searchCode, setSearchCode] = useState("");
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [bookmarkedStocks, setBookmarkedStocks] = useState<string[]>([]);
 
@@ -41,6 +51,28 @@ export function SectorDetail(props: Props) {
 
   // Filter and sort stocks
   const filteredAndSortedStocks = companies.data;
+
+  const updateQuery = (key: string, value: string) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+
+      router.replace(`${PB_PATH_SECTORS}/${code}?${params.toString()}`);
+    }, 500);
+  };
+
+  const handleSearch = (value: string) => {
+    updateQuery("search", value);
+  };
 
   // Set detail navbar title
   useEffect(() => {
@@ -81,13 +113,13 @@ export function SectorDetail(props: Props) {
               <input
                 type="text"
                 placeholder="Filter by stock code (e.g. BBCA)"
-                value={searchCode}
-                onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
+                onChange={(e) => handleSearch(e.target.value)}
+                defaultValue={searchCode}
                 className="w-full pl-10 pr-10 py-2.5 rounded-[10px] bg-muted/30 border border-border text-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
               />
               {searchCode && (
                 <button
-                  onClick={() => setSearchCode("")}
+                  onClick={() => handleSearch("")}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <XIcon className="w-4 h-4" />
@@ -97,16 +129,16 @@ export function SectorDetail(props: Props) {
 
             <div className="flex items-center gap-2">
               {/* Sort Button - Mobile (Bottom Sheet) */}
-              <button
+              {/* <button
                 onClick={() => setShowSortMenu(true)}
                 className="md:hidden flex items-center gap-2 px-4 py-2 rounded-[10px] bg-muted/30 hover:bg-muted/50 text-[13px] font-medium text-foreground transition-all whitespace-nowrap active:scale-95"
               >
                 <ArrowUpDown className="w-4 h-4" />
                 Sort
-              </button>
+              </button> */}
 
               {/* Sort Dropdown - Desktop Only */}
-              <div className="hidden md:block relative">
+              {/* <div className="hidden md:block relative">
                 <Button
                   variant="secondary"
                   onClick={() => setShowSortMenu(!showSortMenu)}
@@ -155,10 +187,6 @@ export function SectorDetail(props: Props) {
                                      
                                      `}
                           >
-                            {/* $
-                                     {sortBy === option.value
-                                       ? "bg-primary text-primary-foreground"
-                                       : "text-foreground hover:bg-muted/30"} */}
                             {option.label}
                           </button>
                         ))}
@@ -166,7 +194,7 @@ export function SectorDetail(props: Props) {
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
@@ -259,7 +287,12 @@ export function SectorDetail(props: Props) {
             </GlassCard>
           ) : (
             filteredAndSortedStocks.map((stock, index) => (
-              <Stock_list key={stock.id} stock={stock} index={index} />
+              <Stock_list
+                key={stock.id}
+                ref={pathname}
+                stock={stock}
+                index={index}
+              />
             ))
           )}
         </div>

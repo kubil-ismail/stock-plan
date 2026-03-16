@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 async function Page() {
-  const [req_get_general_sector] = await Promise.all([get_general_sector()]);
+  const [req_get_general_sector] = await Promise.all([get_general_sector({page: 1, limit: 50})]);
 
   return <Sector response={{ general_sector: req_get_general_sector }} />;
 }

@@ -94,7 +94,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
     {
       name: "Market",
-      href: PB_PATH_MARKET,
+      href: PB_PATH_INDEXES,
       icon: BarChart3,
       requireAuth: false,
     },
@@ -117,7 +117,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     },
     {
       name: "Market",
-      href: PB_PATH_MARKET,
+      href: PB_PATH_INDEXES,
       icon: BarChart3,
       requireAuth: false,
     },

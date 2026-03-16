@@ -1,12 +1,12 @@
 "use client";
 import Stock_list from "@/components/stock-list";
 import { BottomSheet, BottomSheetOption } from "@/components/bottom-sheet";
-import { ArrowUpDown, Search, Star, X } from "lucide-react";
+import { Search, Star, X } from "lucide-react";
 import { GlassCard } from "@/components/glass-card";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { StocksResponse } from "@/types/company";
-import { useState } from "react";
-import { Button } from "@/components/button";
+import React, { useState } from "react";
+import { PB_PATH_STOCKS } from "@/lib/route";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
 
@@ -20,15 +20,43 @@ interface Props {
 
 function Stocks(props: Props) {
   const { companies } = props?.response || {};
+
   const searchParams = useSearchParams();
+
+  const router = useRouter();
+  const search = useSearchParams();
+  const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
+
   const filterParam = searchParams.get("filter");
 
-  const [searchCode, setSearchCode] = useState("");
   const [showSortMenu, setShowSortMenu] = useState(false);
-
   const [stockFilter, setStockFilter] = useState<StockFilter>(
     (filterParam as StockFilter) || "all"
   );
+
+  const searchCode = String(search.get("search") ?? "");
+
+  const updateQuery = (key: string, value: string) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+
+      router.replace(`${PB_PATH_STOCKS}?${params.toString()}`);
+    }, 500);
+  };
+
+  const handleSearch = (value: string) => {
+    updateQuery("search", value);
+  };
 
   const filteredAndSortedStocks = companies.data;
 
@@ -43,13 +71,13 @@ function Stocks(props: Props) {
             <input
               type="text"
               placeholder="Filter by stock code (e.g. BBCA)"
-              value={searchCode}
-              onChange={(e) => setSearchCode(e.target.value.toUpperCase())}
+              defaultValue={searchCode}
+              onChange={(e) => handleSearch(e.target.value)}
               className="w-full pl-10 pr-10 py-2.5 rounded-[10px] bg-muted/30 border border-border text-[14px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
             />
             {searchCode && (
               <button
-                onClick={() => setSearchCode("")}
+                onClick={() => handleSearch("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               >
                 <X className="w-4 h-4" />
@@ -59,16 +87,16 @@ function Stocks(props: Props) {
 
           <div className="flex items-center gap-2">
             {/* Sort Button - Mobile (Bottom Sheet) */}
-            <button
+            {/* <button
               onClick={() => setShowSortMenu(true)}
               className="md:hidden flex items-center gap-2 px-4 py-2 rounded-[10px] bg-muted/30 hover:bg-muted/50 text-[13px] font-medium text-foreground transition-all whitespace-nowrap active:scale-95"
             >
               <ArrowUpDown className="w-4 h-4" />
               Sort
-            </button>
+            </button> */}
 
             {/* Sort Dropdown - Desktop Only */}
-            <div className="hidden md:block relative">
+            {/* <div className="hidden md:block relative">
               <Button
                 variant="secondary"
                 onClick={() => setShowSortMenu(!showSortMenu)}
@@ -117,10 +145,6 @@ function Stocks(props: Props) {
                           
                           `}
                         >
-                          {/* $
-                          {sortBy === option.value
-                            ? "bg-primary text-primary-foreground"
-                            : "text-foreground hover:bg-muted/30"} */}
                           {option.label}
                         </button>
                       ))}
@@ -128,7 +152,7 @@ function Stocks(props: Props) {
                   </div>
                 </>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -153,11 +177,6 @@ function Stocks(props: Props) {
               }`}
             >
               {filter.label}
-              {/* {filter.value === "bookmark" && bookmarkedStocks.length > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold">
-                  {bookmarkedStocks.length}
-                </span>
-              )} */}
             </button>
           ))}
         </div>
@@ -182,11 +201,6 @@ function Stocks(props: Props) {
             }`}
           >
             {filter.label}
-            {/* {filter.value === "bookmark" && bookmarkedStocks.length > 0 && (
-              <span className="ml-2 px-2 py-0.5 rounded-full bg-primary/20 text-[11px] font-bold">
-                {bookmarkedStocks.length}
-              </span>
-            )} */}
           </button>
         ))}
       </div>

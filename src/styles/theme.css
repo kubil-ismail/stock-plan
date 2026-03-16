@@ -2,53 +2,53 @@
 
 :root {
   --font-size: 16px;
-  
+
   /* Warm Color System */
-  --background: #FAF7F2;
-  --foreground: #2A2826;
-  
+  --background: #faf7f2;
+  --foreground: #2a2826;
+
   --card: rgba(255, 255, 255, 0.65);
-  --card-foreground: #2A2826;
-  
+  --card-foreground: #2a2826;
+
   --popover: rgba(255, 255, 255, 0.95);
-  --popover-foreground: #2A2826;
-  
-  --primary: #F97316;
+  --popover-foreground: #2a2826;
+
+  --primary: #f97316;
   --primary-foreground: #ffffff;
-  
-  --secondary: #D4704B;
+
+  --secondary: #d4704b;
   --secondary-foreground: #ffffff;
-  
-  --success: #6B9E7A;
+
+  --success: #6b9e7a;
   --success-foreground: #ffffff;
-  
-  --muted: #E8E4DE;
-  --muted-foreground: #8A8682;
-  
-  --accent: #FFF4ED;
-  --accent-foreground: #2A2826;
-  
-  --destructive: #E76B6B;
+
+  --muted: #e8e4de;
+  --muted-foreground: #8a8682;
+
+  --accent: #fff4ed;
+  --accent-foreground: #2a2826;
+
+  --destructive: #e76b6b;
   --destructive-foreground: #ffffff;
-  
+
   --border: rgba(42, 40, 38, 0.1);
   --input: transparent;
   --input-background: rgba(255, 255, 255, 0.7);
   --switch-background: #cbced4;
-  
+
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  
-  --ring: #F97316;
-  
-  --chart-1: #F97316;
-  --chart-2: #D4704B;
-  --chart-3: #6B9E7A;
-  --chart-4: #E76B6B;
-  --chart-5: #FCA778;
-  
+
+  --ring: #f97316;
+
+  --chart-1: #f97316;
+  --chart-2: #d4704b;
+  --chart-3: #6b9e7a;
+  --chart-4: #e76b6b;
+  --chart-5: #fca778;
+
   /* Typography Scale */
   --text-h1: 32px;
   --text-h2: 24px;
@@ -57,18 +57,18 @@
   --text-body-lg: 16px;
   --text-body: 14px;
   --text-caption: 12px;
-  
+
   /* Border Radius */
   --radius-button: 10px;
   --radius-input: 10px;
   --radius-card: 16px;
   --radius-modal: 20px;
-  
+
   --radius: 0.625rem;
-  
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: #F97316;
+  --sidebar-primary: #f97316;
   --sidebar-primary-foreground: oklch(0.985 0 0);
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
@@ -163,7 +163,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: "Plus Jakarta Sans", sans-serif;
   }
 
   /**
@@ -264,5 +264,12 @@
 
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+}
+
+.last\:border-b-0 {
+  &:last-child {
+    border-bottom-style: inherit;
+    border-bottom-width: inherit;
   }
 }

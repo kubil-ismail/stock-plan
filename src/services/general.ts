@@ -4,11 +4,15 @@ import { SectorResponse } from "@/types/general";
 import axios from "axios";
 import http from "@/lib/http";
 
-export const get_general_sector = async (
-  page: number = 1,
-  limit: number = 10,
-  search: string = ""
-): Promise<SectorResponse> => {
+export const get_general_sector = async ({
+  page = 1,
+  limit = 10,
+  search = "",
+}: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}): Promise<SectorResponse> => {
   try {
     const request = await http.get<SectorResponse>(API_GENERAL_SECTOR, {
       params: { page, limit, search },
