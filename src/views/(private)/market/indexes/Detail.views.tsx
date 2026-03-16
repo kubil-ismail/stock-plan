@@ -491,15 +491,6 @@ export default function IndexDetail() {
             })
           )}
         </div>
-
-        {/* Load More Hint */}
-        {stockFilter === "all" && filteredAndSortedStocks.length >= 50 && (
-          <div className="text-center py-4">
-            <p className="text-[13px] text-muted-foreground">
-              Showing first 50 stocks
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );

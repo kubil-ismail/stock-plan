@@ -138,7 +138,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isActive = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === PB_PATH_MARKET) {
+    if (href === PB_PATH_INDEXES) {
       return (
         pathname.startsWith(PB_PATH_MARKET) ||
         pathname.startsWith(PB_PATH_SECTORS) ||
@@ -153,7 +153,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const isActiveMobile = (href: string) => {
     if (href === "/") return pathname === "/";
-    if (href === PB_PATH_MARKET) {
+    if (href === PB_PATH_INDEXES) {
       return (
         pathname.startsWith(PB_PATH_MARKET) ||
         pathname.startsWith(PB_PATH_SECTORS) ||
@@ -195,6 +195,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               {desktopNavigation.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
+
+                console.log(item.href,active);
 
                 if (item.requireAuth && !isAuthenticated) {
                   return (

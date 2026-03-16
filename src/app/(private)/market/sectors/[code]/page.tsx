@@ -1,3 +1,4 @@
+import { transformSectorCode } from "@/lib/utils";
 import { get_companies } from "@/services/company";
 import { get_general_sector } from "@/services/general";
 import { SectorDetail } from "@/views/(private)/market/sectors/Detail.views";
@@ -9,20 +10,13 @@ interface PageProps {
   searchParams: { search: string };
 }
 
-function transformCode(code: string) {
-  return code
-    ?.split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
-}
-
 async function Page({ params, searchParams }: PageProps) {
   const { code } = await params;
   const { search } = await searchParams;
 
   const [req_get_companies, req_general_sector] = await Promise.all([
-    get_companies({ search, sector: transformCode(code) }),
-    get_general_sector({ page: 1, limit: 1, search: transformCode(code) }),
+    get_companies({ page: 1, search, sector: transformSectorCode(code) }),
+    get_general_sector({ page: 1, limit: 1, search: transformSectorCode(code) }),
   ]);
 
   return (
@@ -41,7 +35,7 @@ export async function generateMetadata({ params }: PageProps) {
   const req_general_sector = await get_general_sector({
     page: 1,
     limit: 1,
-    search: transformCode(code),
+    search: transformSectorCode(code),
   });
 
   const sector = req_general_sector.data?.[0];

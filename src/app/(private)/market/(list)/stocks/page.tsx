@@ -14,7 +14,9 @@ interface PageProps {
 
 async function Page({ searchParams }: PageProps) {
   const { search } = await searchParams;
-  const [req_get_companies] = await Promise.all([get_companies({ search })]);
+  const [req_get_companies] = await Promise.all([
+    get_companies({ page: 1, search }),
+  ]);
 
   return <Stocks response={{ companies: req_get_companies }} />;
 }

@@ -5,8 +5,10 @@ import { Search, Star, X } from "lucide-react";
 import { GlassCard } from "@/components/glass-card";
 import { useRouter, useSearchParams } from "next/navigation";
 import { StocksResponse } from "@/types/company";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PB_PATH_STOCKS } from "@/lib/route";
+import { get_companies } from "@/services/company";
+import { Button } from "@/components/button";
 
 type StockFilter = "all" | "gainers" | "losers" | "active" | "bookmark";
 
@@ -29,7 +31,10 @@ function Stocks(props: Props) {
 
   const filterParam = searchParams.get("filter");
 
+  const [list, setList] = useState(companies.data);
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(companies.options.page);
   const [stockFilter, setStockFilter] = useState<StockFilter>(
     (filterParam as StockFilter) || "all"
   );
@@ -58,7 +63,28 @@ function Stocks(props: Props) {
     updateQuery("search", value);
   };
 
-  const filteredAndSortedStocks = companies.data;
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    setIsLoadingMore(true);
+
+    get_companies({
+      page: nextPage,
+      search: searchCode,
+    })
+      .then((response) => {
+        setList([...list, ...response.data]);
+      })
+      .catch(() => {
+        setCurrentPage(nextPage - 1);
+      })
+      .finally(() => setIsLoadingMore(false));
+  };
+
+  useEffect(() => {
+    setList(companies.data);
+    setCurrentPage(companies.options.page);
+  }, [companies]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -206,8 +232,8 @@ function Stocks(props: Props) {
       </div>
 
       {/* Stocks List */}
-      <div className="space-y-3">
-        {filteredAndSortedStocks.length === 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        {list.length === 0 ? (
           <GlassCard className="p-12 text-center">
             {stockFilter === "bookmark" ? (
               // Empty state for Bookmark tab
@@ -234,19 +260,22 @@ function Stocks(props: Props) {
             )}
           </GlassCard>
         ) : (
-          filteredAndSortedStocks.map((stock, index) => (
+          list.map((stock, index) => (
             <Stock_list key={stock.id} stock={stock} index={index} />
           ))
         )}
       </div>
 
-      {/* Load More Hint */}
-      {stockFilter === "all" && filteredAndSortedStocks.length >= 50 && (
-        <div className="text-center py-4">
-          <p className="text-[13px] text-muted-foreground">
-            Showing first 50 stocks
-          </p>
-        </div>
+      {currentPage <
+        Math.ceil(companies.options.total / companies.options.limit) && (
+        <Button
+          className="mx-auto"
+          onClick={handleLoadMore}
+          loading={isLoadingMore}
+          disabled={isLoadingMore}
+        >
+          Load More
+        </Button>
       )}
 
       {/* Mobile Sort Bottom Sheet */}

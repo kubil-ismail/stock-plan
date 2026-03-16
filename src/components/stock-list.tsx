@@ -4,7 +4,6 @@ import { PB_PATH_STOCKS } from "@/lib/route";
 import { useRouter } from "next/navigation";
 import { Badge } from "./badge";
 import { StockList } from "@/types/company";
-// import { Star } from "lucide-react";
 
 interface Props {
   stock: StockList;
@@ -27,7 +26,7 @@ function Stock_list(props: Props) {
   return (
     <GlassCard
       key={stock.id}
-      className={`p-4 md:p-5 cursor-pointer transition-all animate-fade-in group hover:bg-destructive/5`}
+      className={`p-4 md:p-5 cursor-pointer group hover:bg-destructive/5`}
       style={{ animationDelay: `${index * 20}ms` }}
       onClick={() => router.push(url)}
     >

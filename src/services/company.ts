@@ -7,7 +7,7 @@ import axios from "axios";
 
 export const get_companies = async ({
   page = 1,
-  limit = 10,
+  limit = 48,
   search = "",
   sector = "",
 }: {
@@ -17,6 +17,7 @@ export const get_companies = async ({
   sector?: string;
 }): Promise<StocksResponse> => {
   try {
+    
     const request = await http.get<StocksResponse>(API_COMPANIES, {
       params: { page, limit, search, sector },
     });
