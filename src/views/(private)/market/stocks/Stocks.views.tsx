@@ -188,9 +188,9 @@ function Stocks(props: Props) {
         <div className="flex gap-2 overflow-x-auto scrollbar-hide">
           {[
             { value: "all", label: "All" },
-            { value: "gainers", label: "Gainers" },
-            { value: "losers", label: "Losers" },
-            { value: "active", label: "Most Active" },
+            // { value: "gainers", label: "Gainers" },
+            // { value: "losers", label: "Losers" },
+            // { value: "active", label: "Most Active" },
             { value: "bookmark", label: "Bookmark" },
           ].map((filter) => (
             <button
@@ -212,9 +212,9 @@ function Stocks(props: Props) {
       <div className="hidden md:flex gap-2 overflow-x-auto pb-2">
         {[
           { value: "all", label: "All" },
-          { value: "gainers", label: "Gainers" },
-          { value: "losers", label: "Losers" },
-          { value: "active", label: "Most Active" },
+          // { value: "gainers", label: "Gainers" },
+          // { value: "losers", label: "Losers" },
+          // { value: "active", label: "Most Active" },
           { value: "bookmark", label: "Bookmark" },
         ].map((filter) => (
           <button

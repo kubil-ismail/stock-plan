@@ -423,7 +423,7 @@ export default function StockDetail(props: Props) {
                 value="secretary"
                 className="border border-border rounded-xl bg-card/30"
               >
-                <AccordionTrigger className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
                   <h4 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
                     <Briefcase className="hidden md:block w-4 h-4 text-primary" />
                     Company Secretary / Sekretaris Perusahaan
@@ -470,7 +470,7 @@ export default function StockDetail(props: Props) {
                 value="directors"
                 className="border border-border rounded-xl bg-card/30"
               >
-                <AccordionTrigger className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
                   <h4 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
                     <Briefcase className="hidden md:block w-4 h-4 text-primary" />
                     Board of Directors / Direksi
@@ -524,7 +524,7 @@ export default function StockDetail(props: Props) {
                 value="commissioners"
                 className="border border-border rounded-xl bg-card/30"
               >
-                <AccordionTrigger className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
                   <h4 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
                     <Shield className="hidden md:block w-4 h-4 text-primary" />
                     Board of Commissioners / Komisaris
@@ -577,7 +577,7 @@ export default function StockDetail(props: Props) {
                 value="Subsidiaries"
                 className="border border-border rounded-xl bg-card/30"
               >
-                <AccordionTrigger className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
                   <h4 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
                     <Network className="hidden md:block w-4 h-4 text-primary" />
                     Subsidiaries / Anak Perusahaan
@@ -619,7 +619,7 @@ export default function StockDetail(props: Props) {
                 value="Shareholders"
                 className="border border-border rounded-xl bg-card/30 last:border-b"
               >
-                <AccordionTrigger className="px-4 hover:no-underline">
+                <AccordionTrigger className="px-4 hover:no-underline cursor-pointer">
                   <h4 className="text-[16px] font-semibold text-foreground flex items-center gap-2">
                     <Users className="hidden md:block w-4 h-4 text-primary" />
                     Shareholders / Pemegang Saham
