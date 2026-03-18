@@ -30,7 +30,7 @@ function Stock_list(props: Props) {
       style={{ animationDelay: `${index * 20}ms` }}
       onClick={() => router.push(url)}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-start gap-4">
         {/* Stock Logo */}
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0">
           <span className="text-[16px] font-bold text-primary">

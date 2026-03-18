@@ -414,7 +414,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </nav>
 
-      {/* Floating Action Button - Mobile Only - Portfolio Page Only */}
+      {/* Floating Action Button - Portfolio Page Only */}
       {pathname === PR_PATH_PORTO && <FloatingActionButton />}
 
       {/* Search Modal - Desktop */}
