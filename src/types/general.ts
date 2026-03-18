@@ -1,3 +1,5 @@
+import { StockList } from "./company";
+
 export interface Sector {
   id: number;
   name: string;
@@ -7,6 +9,13 @@ export interface Sector {
 export interface MarketIndex {
   id: number;
   ticker: string;
+}
+
+
+export interface MarketIndexDetail {
+  id: number;
+  company: StockList;
+  indexes: MarketIndex
 }
 
 export interface PaginationOptions {
@@ -26,5 +35,12 @@ export interface MarketIndexResponse {
   status: boolean;
   message: string;
   data: MarketIndex[];
+  options: PaginationOptions;
+}
+
+export interface MarketIndexDetailResponse {
+  status: boolean;
+  message: string;
+  data: MarketIndexDetail[];
   options: PaginationOptions;
 }

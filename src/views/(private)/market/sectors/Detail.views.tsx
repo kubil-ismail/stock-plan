@@ -53,6 +53,11 @@ export function SectorDetail(props: Props) {
   const [stockFilter, setStockFilter] = useState<StockFilter>(
     (filterParam as StockFilter) || "all"
   );
+
+  const totalPages = Math.ceil(
+    (companies.options?.total || 0) /
+      (companies.options?.limit || 1)
+  );
   const { setNavbar, clearNavbar } = useDetailNavbar();
 
   const updateQuery = (key: string, value: string) => {
@@ -324,8 +329,7 @@ export function SectorDetail(props: Props) {
           )}
         </div>
 
-        {currentPage <
-          Math.ceil(companies.options.total / companies.options.limit) && (
+        {currentPage < totalPages && (
           <Button
             className="mx-auto"
             onClick={handleLoadMore}

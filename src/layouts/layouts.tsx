@@ -196,8 +196,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 const Icon = item.icon;
                 const active = isActive(item.href);
 
-                console.log(item.href,active);
-
                 if (item.requireAuth && !isAuthenticated) {
                   return (
                     <button

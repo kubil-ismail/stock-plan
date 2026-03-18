@@ -39,6 +39,9 @@ function Stocks(props: Props) {
     (filterParam as StockFilter) || "all"
   );
 
+  const totalPages = Math.ceil(
+    (companies.options?.total || 0) / (companies.options?.limit || 1)
+  );
   const searchCode = String(search.get("search") ?? "");
 
   const updateQuery = (key: string, value: string) => {
@@ -266,8 +269,7 @@ function Stocks(props: Props) {
         )}
       </div>
 
-      {currentPage <
-        Math.ceil(companies.options.total / companies.options.limit) && (
+      {currentPage < totalPages && (
         <Button
           className="mx-auto"
           onClick={handleLoadMore}
