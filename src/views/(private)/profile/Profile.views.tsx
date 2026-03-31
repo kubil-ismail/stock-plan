@@ -23,19 +23,25 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { useFormik } from "formik";
 import { useRouter, useSearchParams } from "next/navigation";
 import { PB_PATH_AUTH_LOGOUT } from "@/lib/route";
+import Head_profile from "./_Head.profile";
+import { ProfileResponse } from "@/types/auth";
 
-export default function Profile({ response }: any) {
-  const { profile } = response;
+interface Response {
+  profile: ProfileResponse;
+}
+
+interface Props {
+  response: Response;
+}
+
+export default function Profile(props: Props) {
+  const { profile } = props.response ?? {};
+
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({
-    fullname: profile?.fullname,
-    username: profile?.username,
-    email: profile?.email,
-  });
 
   // Broker management state
   const [brokers, setBrokers] = useState(mockBrokers);
@@ -51,11 +57,6 @@ export default function Profile({ response }: any) {
   // Delete confirmation state
   const [deleteBrokerId, setDeleteBrokerId] = useState<string | null>(null);
   const [isDeleteBrokerModalOpen, setIsDeleteBrokerModalOpen] = useState(false);
-
-  const handleSave = () => {
-    setIsEditing(false);
-    // Mock save action
-  };
 
   const handleAddBroker = () => {
     if (!brokerForm.name) {
@@ -106,98 +107,7 @@ export default function Profile({ response }: any) {
       </div>
 
       {/* Profile Card */}
-      <GlassCard className="p-6 md:p-8">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Avatar Section */}
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <span className="text-[48px] font-bold text-white">
-                {formData.fullname
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </span>
-            </div>
-            <Button variant="outline" size="sm">
-              Change Photo
-            </Button>
-          </div>
-
-          {/* Info Section */}
-          <div className="flex-1">
-            {!isEditing ? (
-              <div className="space-y-5">
-                <div>
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    Full Name
-                  </p>
-                  <p className="text-[18px] font-semibold text-foreground">
-                    {formData.fullname}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    Username
-                  </p>
-                  <p className="text-[16px] text-foreground">
-                    @{formData.username}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    Email
-                  </p>
-                  <p className="text-[16px] text-foreground">
-                    {formData.email}
-                  </p>
-                </div>
-
-                <div className="pt-4">
-                  <Button onClick={() => setIsEditing(true)}>
-                    Edit Profile
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <Input
-                  label="Full Name"
-                  value={formData.fullname}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullname: e.target.value })
-                  }
-                />
-
-                <Input
-                  label="Username"
-                  value={formData.username}
-                  onChange={(e) =>
-                    setFormData({ ...formData, username: e.target.value })
-                  }
-                />
-
-                <Input
-                  label="Email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                />
-
-                <div className="flex gap-3 pt-2">
-                  <Button onClick={handleSave}>Save Changes</Button>
-                  <Button variant="outline" onClick={() => setIsEditing(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </GlassCard>
+      <Head_profile profile={profile.data} />
 
       {/* Broker Management Section */}
       <GlassCard className="p-6">
