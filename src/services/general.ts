@@ -1,7 +1,12 @@
 "use server";
-import { API_GENERAL_MARKET_INDEXES, API_GENERAL_SECTOR } from "@/lib/api";
+import {
+  API_GENERAL_BROKERS,
+  API_GENERAL_MARKET_INDEXES,
+  API_GENERAL_SECTOR,
+} from "@/lib/api";
 import {
   SectorResponse,
+  BrokersResponse,
   MarketIndexResponse,
   MarketIndexDetailResponse,
 } from "@/types/general";
@@ -103,6 +108,26 @@ export const get_general_market_indexes_detail = async ({
       message: message,
       data: [],
       options: { page: 0, limit: 0, total: 0 },
+    };
+  }
+};
+
+export const get_general_brokers = async (): Promise<BrokersResponse> => {
+  try {
+    const request = await http.get<BrokersResponse>(API_GENERAL_BROKERS);
+
+    return request.data;
+  } catch (error) {
+    let message = "Something went wrong";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message ?? error.message;
+    }
+
+    return {
+      status: false,
+      message: message,
+      data: [],
     };
   }
 };

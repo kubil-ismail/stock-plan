@@ -6,7 +6,9 @@ import { Button } from "@/components/button";
 import { Input } from "@/components/input";
 import { Profile } from "@/types/auth";
 import { useFormik } from "formik";
+import { toast } from "sonner";
 import { update_auth_profile } from "@/services/auth";
+import { CheckCircle, XCircle } from "lucide-react";
 
 interface Props {
   profile: Profile;
@@ -17,8 +19,8 @@ const validationSchema = yup.object({
     .string()
     .email("Enter a valid email")
     .required("Email is required"),
-  fullname: yup.string().required("Password is required"),
-  username: yup.string().required("Password is required"),
+  fullname: yup.string().required("Fullname is required"),
+  username: yup.string().required("Username is required"),
 });
 
 function Head_profile(props: Props) {
@@ -42,25 +44,33 @@ function Head_profile(props: Props) {
 
       return update_auth_profile(payload)
         .then((response) => {
-          console.log(response);
-          // if (!response.success) {
-          //   throw {
-          //     message: "Email / password not match",
-          //   };
-          // }
+          if (!response.status) {
+            throw {
+              message: response?.message,
+            };
+          }
 
-          // if (search.size > 0) {
-          //   router.replace(String(search.get("redirect")));
-          //   return;
-          // }
-
-          // router.refresh();
+          toast.success("You're all set!", {
+            description: "Your profile has been updated successfully.",
+            icon: <CheckCircle size="14px" className="text-green-600" />,
+          });
         })
         .catch((error) => {
-          formik.setFieldError(
-            "email",
-            error?.message ?? "Something wrong, try again"
-          );
+          switch (error?.message) {
+            case "Email already registered":
+              formik.setFieldError("email", error?.message);
+              break;
+
+            case "Username already registered":
+              formik.setFieldError("username", error?.message);
+              break;
+            default:
+              toast.error("Failed to update profile", {
+                description: "Something went wrong. Please try again.",
+                icon: <XCircle size="14px" className="text-red-600" />,
+              });
+              break;
+          }
         });
     },
   });
@@ -75,9 +85,6 @@ function Head_profile(props: Props) {
               {profile.fullname?.charAt(0)}
             </span>
           </div>
-          <Button variant="outline" size="sm">
-            Change Photo
-          </Button>
         </div>
 
         {/* Info Section */}

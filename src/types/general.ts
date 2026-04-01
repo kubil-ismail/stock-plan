@@ -11,11 +11,17 @@ export interface MarketIndex {
   ticker: string;
 }
 
-
 export interface MarketIndexDetail {
   id: number;
   company: StockList;
-  indexes: MarketIndex
+  indexes: MarketIndex;
+}
+
+export interface Brokers {
+  id: number;
+  ticker: string;
+  name: string;
+  type: string[];
 }
 
 export interface PaginationOptions {
@@ -43,4 +49,10 @@ export interface MarketIndexDetailResponse {
   message: string;
   data: MarketIndexDetail[];
   options: PaginationOptions;
+}
+
+export interface BrokersResponse {
+  status: boolean;
+  message: string;
+  data: Brokers[];
 }
