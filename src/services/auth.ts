@@ -96,6 +96,30 @@ export const get_auth_brokers = async (): Promise<MyBrokerResponse> => {
   }
 };
 
+export const add_auth_brokers = async (payload: {
+  broker_id: number | string;
+  account_number: number | string;
+  notes: string;
+}): Promise<DeleteBrokerResponse> => {
+  try {
+    const request = await http.post<DeleteBrokerResponse>(API_AUTH_BROKER, payload);
+
+    return request.data;
+  } catch (error) {
+    let message = "Something went wrong";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message ?? error.message;
+    }
+
+    return {
+      status: false,
+      message: message,
+      data: 0,
+    };
+  }
+};
+
 export const delete_auth_brokers = async (
   id: string | number
 ): Promise<DeleteBrokerResponse> => {

@@ -8,7 +8,7 @@ import { Button } from "@/components/button";
 import { MyBrokerResponse } from "@/types/auth";
 import { useSearchParams } from "next/navigation";
 import { GlassCard } from "@/components/glass-card";
-import { delete_auth_brokers } from "@/services/auth";
+import { add_auth_brokers, delete_auth_brokers } from "@/services/auth";
 import { ConfirmationModal } from "@/components/confirmation-modal";
 import { get_general_brokers } from "@/services/general";
 import {
@@ -17,6 +17,7 @@ import {
   Building2,
   AlertTriangle,
   CheckCircle,
+  XCircle,
 } from "lucide-react";
 import {
   Dialog,
@@ -38,8 +39,8 @@ const validationSchema = yup.object({
     .string()
     .min(1, "Broker is required")
     .required("Broker is required"),
-  account_number: yup.string(),
-  notes: yup.string(),
+  account_number: yup.string().optional(),
+  notes: yup.string().optional(),
 });
 
 function Broker_profile(props: Props) {
@@ -52,6 +53,10 @@ function Broker_profile(props: Props) {
     searchParams.get("section") === "brokers"
   );
 
+  // Delete confirmation state
+  const [deleteBrokerId, setDeleteBrokerId] = useState<number | null>(null);
+  const [isDeleteBrokerModalOpen, setIsDeleteBrokerModalOpen] = useState(false);
+
   const formik = useFormik({
     initialValues: {
       broker_id: "",
@@ -59,29 +64,37 @@ function Broker_profile(props: Props) {
       notes: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async (values) => {},
+    onSubmit: async (values) => {
+      setIsAddBrokerOpen(false);
+
+      return add_auth_brokers(values)
+        .then(() => {
+          toast.success("Broker added successfully!", {
+            icon: <CheckCircle size="14px" className="text-green-600" />,
+          });
+
+          setList([
+            {
+              id: new Date().getTime(),
+              account_number: parseInt(values.account_number),
+              notes: values?.notes,
+              broker: brokerOptions.find(
+                (item) => item.id == parseInt(values.broker_id)
+              )!,
+            },
+            ...list,
+          ]);
+
+          formik.resetForm();
+        })
+        .catch(() => {
+          toast.error("Failed to add broker", {
+            description: "Something went wrong. Please try again.",
+            icon: <XCircle size="14px" className="text-red-600" />,
+          });
+        });
+    },
   });
-
-  // Delete confirmation state
-  const [deleteBrokerId, setDeleteBrokerId] = useState<number | null>(null);
-  const [isDeleteBrokerModalOpen, setIsDeleteBrokerModalOpen] = useState(false);
-
-  const handleAddBroker = () => {
-    // if (!brokerForm.name) {
-    //   toast.error("Please select a broker");
-    //   return;
-    // }
-
-    // const newBroker = {
-    //   id: Date.now().toString(),
-    //   ...brokerForm,
-    // };
-
-    // setBrokers([...brokers, newBroker]);
-    setIsAddBrokerOpen(false);
-    // setBrokerForm({ name: "", accountNumber: "", notes: "" });
-    toast.success("Broker added successfully!");
-  };
 
   const handleDeleteBrokerClick = (id: number) => {
     setDeleteBrokerId(id);
@@ -106,8 +119,6 @@ function Broker_profile(props: Props) {
       get_general_brokers().then((response) => setBrokerOptions(response.data));
     }
   }, [isAddBrokerOpen]);
-
-  console.log(formik);
 
   return (
     <>
@@ -215,7 +226,8 @@ function Broker_profile(props: Props) {
             <Input
               id="account_number"
               name="account_number"
-              label="Account Number"
+              label="Account Number (Optional)"
+              type="number"
               value={formik.values.account_number}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
