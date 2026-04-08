@@ -4,7 +4,7 @@ import { RefreshCcw } from "lucide-react";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "outline" | "ghost";
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | 'xs';
   children: React.ReactNode;
   loading?: boolean;
 }
@@ -28,12 +28,14 @@ export function Button({
   };
 
   const sizes = {
+    xs: "px-1 py-0.5 text-[10px]",
     sm: "px-3 py-1.5 text-[12px]",
     md: "px-4 py-2 text-[14px]",
     lg: "px-6 py-3 text-[16px]",
   };
 
   const sizeText = {
+    xs: "10px",
     sm: "13px",
     md: "16px",
     lg: "20px",

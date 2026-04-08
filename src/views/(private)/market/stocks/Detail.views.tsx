@@ -27,6 +27,7 @@ import { PB_PATH_STOCKS, PR_PATH_ORDER_ADD } from "@/lib/route";
 import Link from "next/link";
 import { StockDetailResponse } from "@/types/company";
 import { format } from "date-fns";
+import { FloatingActionButton } from "@/components/floating-action-button";
 
 interface Response {
   companies: StockDetailResponse;
@@ -205,7 +206,7 @@ export default function StockDetail(props: Props) {
 
               {/* Quick CTAs */}
               <div className="flex flex-wrap gap-3 pt-1">
-                <Button
+                {/* <Button
                   variant="outline"
                   size="sm"
                   className="flex items-center"
@@ -215,18 +216,9 @@ export default function StockDetail(props: Props) {
                 >
                   <StarIcon className="w-3 h-3 mr-1.5" />
                   Bookmark
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className="flex items-center"
-                  onClick={() =>
-                    router.push(`${PR_PATH_ORDER_ADD}?stock=${stock.id}`)
-                  }
-                >
-                  <Plus className="w-3 h-3 mr-1.5" />
-                  Add Order
-                </Button>
+                </Button> */}
+                <FloatingActionButton ticker={stock.ticker} variant="button" />
+              
               </div>
             </div>
           </div>

@@ -11,6 +11,26 @@ export interface Profile {
   email: string;
 }
 
+export interface TradingPlanList {
+  id: number;
+  ticker: string;
+  order_type: string;
+  price: number;
+  lot: number;
+  expiry: string;
+  status: string;
+  user_broker: {
+    id: number;
+    account_number: number;
+    notes: string;
+    broker: {
+      name: string;
+      ticker: string;
+      type: string[];
+    };
+  };
+}
+
 export interface ProfileResponse {
   status: boolean;
   message: string;
@@ -40,4 +60,24 @@ export interface DeleteBrokerResponse {
   status: boolean;
   message: string;
   data: number;
+}
+
+export interface MyTradingPlanResponse {
+  status: boolean;
+  message: string;
+  data: TradingPlanList[];
+  options: Options;
+}
+
+export interface AddTradingPlanResponse {
+  status: boolean;
+  message: string;
+  data: TradingPlanList;
+}
+
+
+export interface EditTradingPlanResponse {
+  status: boolean;
+  message: string;
+  data: number[];
 }

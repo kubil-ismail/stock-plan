@@ -66,7 +66,6 @@ export default function Register() {
   });
 
   const handleErrorMessage = (message: string) => {
-    console.log(message);
     switch (message) {
       case "Email already registered":
         formik.setFieldError("email", message);

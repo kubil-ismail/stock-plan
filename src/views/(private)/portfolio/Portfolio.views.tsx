@@ -1,44 +1,74 @@
 "use client";
-import { useState } from "react";
-import { GlassCard } from "@/components/glass-card";
+import { Search, X } from "lucide-react";
 import { Badge } from "@/components/badge";
 import { Button } from "@/components/button";
-import { Search, X } from "lucide-react";
-import { mockPortfolioOngoing, mockPortfolioHistory } from "@/lib/mock-data";
-import { useRouter } from "next/navigation";
-import { PR_PATH_ORDER } from "@/lib/route";
+import React, { useEffect, useState } from "react";
+import { GlassCard } from "@/components/glass-card";
+import { PB_PATH_STOCKS, PR_PATH_PORTO } from "@/lib/route";
+import { useRouter, useSearchParams } from "next/navigation";
+import { mockPortfolioHistory } from "@/lib/mock-data";
+import { MyTradingPlanResponse, TradingPlanList } from "@/types/auth";
+import Porto_list from "@/components/porto-list";
+import { formatRupiah } from "@/lib/utils";
+import { format } from "date-fns";
+import Link from "next/link";
+import { FloatingActionButton } from "@/components/floating-action-button";
 
-export default function Portfolio() {
+interface Props {
+  response: {
+    trading_plan: MyTradingPlanResponse;
+  };
+}
+
+export default function Portfolio(props: Props) {
+  const { trading_plan } = props.response;
+  const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
+  const search = useSearchParams();
+
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"ongoing" | "history">("ongoing");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedOrder, setSelectedOrder] = useState<any>(null);
-
-  const filteredOngoing = mockPortfolioOngoing.filter(
-    (item) =>
-      item.stockCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.stockName.toLowerCase().includes(searchQuery.toLowerCase())
+  const [selectedOrder, setSelectedOrder] = useState<TradingPlanList | null>(
+    null
   );
-
-  const filteredHistory = mockPortfolioHistory.filter(
-    (item) =>
-      item.stockCode.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.stockName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const searchCode = String(search.get("search") ?? "");
 
   // Handler for order click - navigate on mobile, show panel on desktop
-  const handleOrderClick = (order: any) => {
-    // Check if mobile (screen width < 1024px which is lg breakpoint)
-    const isMobile = window.innerWidth < 1024;
-
-    if (isMobile) {
-      // Navigate to dedicated order detail page on mobile
-      router.push(`${PR_PATH_ORDER}/${order.id}`);
-    } else {
-      // Show side panel on desktop
-      setSelectedOrder(order);
-    }
+  const handleOrderClick = (order: TradingPlanList) => {
+    router.push(`${PR_PATH_PORTO}?order_id=${order.id}`);
+    setSelectedOrder(order);
   };
+
+  const updateQuery = (key: string, value: string) => {
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+
+      router.replace(`${PR_PATH_PORTO}?${params.toString()}`);
+    }, 500);
+  };
+
+  const handleSearch = (value: string) => {
+    updateQuery("search", value);
+  };
+
+  useEffect(() => {
+    if (search.get("order_id") && trading_plan.data.length > 0) {
+      setSelectedOrder(
+        trading_plan?.data?.find(
+          (item) => item.id === parseInt(String(search.get("order_id")))
+        ) ?? null
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search.get("order_id")]);
 
   return (
     <div className="space-y-6">
@@ -51,22 +81,6 @@ export default function Portfolio() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-2">
-        <Button
-          variant={activeTab === "ongoing" ? "primary" : "outline"}
-          onClick={() => setActiveTab("ongoing")}
-        >
-          Ongoing ({mockPortfolioOngoing.length})
-        </Button>
-        <Button
-          variant={activeTab === "history" ? "primary" : "outline"}
-          onClick={() => setActiveTab("history")}
-        >
-          History ({mockPortfolioHistory.length})
-        </Button>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Table */}
         <div className="lg:col-span-2">
@@ -77,112 +91,18 @@ export default function Portfolio() {
               <input
                 type="text"
                 placeholder="Search by code or name..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                defaultValue={searchCode}
+                onChange={(e) => handleSearch(e.target.value)}
                 className="w-full pl-10 pr-4 py-2.5 rounded-[10px] border border-border bg-input-background text-[14px] focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
 
-            {activeTab === "ongoing" ? (
-              <div className="space-y-3">
-                {filteredOngoing.map((order) => (
-                  <button
-                    key={order.id}
-                    onClick={() => handleOrderClick(order)}
-                    className="w-full text-left p-4 rounded-lg bg-accent/30 hover:bg-accent transition-colors"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                          <span className="text-[12px] font-bold text-primary">
-                            {order.stockCode.substring(0, 2)}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-[14px] font-semibold text-foreground">
-                            {order.stockCode}
-                          </p>
-                          <p className="text-[12px] text-muted-foreground">
-                            {order.action} • {order.lot} lots
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-[14px] font-semibold text-foreground">
-                          ${order.targetPrice.toFixed(2)}
-                        </p>
-                        <Badge
-                          variant={
-                            order.status === "Active" ? "success" : "warning"
-                          }
-                          size="sm"
-                        >
-                          {order.status}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-                      <span>Expires: {order.expiry}</span>
-                      <span>Current: ${order.currentPrice.toFixed(2)}</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {filteredHistory.map((order) => {
-                  const isProfit = order.realizedGain > 0;
-                  return (
-                    <button
-                      key={order.id}
-                      onClick={() => handleOrderClick(order)}
-                      className="w-full text-left p-4 rounded-lg bg-accent/30 hover:bg-accent transition-colors"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                            <span className="text-[12px] font-bold text-primary">
-                              {order.stockCode.substring(0, 2)}
-                            </span>
-                          </div>
-                          <div>
-                            <p className="text-[14px] font-semibold text-foreground">
-                              {order.stockCode}
-                            </p>
-                            <p className="text-[12px] text-muted-foreground">
-                              {order.action} • {order.lot} lots
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p
-                            className={`text-[16px] font-bold ${
-                              isProfit ? "text-success" : "text-destructive"
-                            }`}
-                          >
-                            {isProfit ? "+" : ""}$
-                            {order.realizedGain.toFixed(2)}
-                          </p>
-                          <Badge
-                            variant={isProfit ? "success" : "danger"}
-                            size="sm"
-                          >
-                            {order.status}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between text-[12px] text-muted-foreground">
-                        <span>Entry: ${order.entryPrice.toFixed(2)}</span>
-                        <span>Exit: ${order.exitPrice.toFixed(2)}</span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
+            <Porto_list
+              list={trading_plan.data}
+              onClick={(value) => handleOrderClick(value)}
+            />
 
-            {((activeTab === "ongoing" && filteredOngoing.length === 0) ||
-              (activeTab === "history" && filteredHistory.length === 0)) && (
+            {trading_plan.data.length === 0 && (
               <p className="text-center text-muted-foreground py-12">
                 No orders found
               </p>
@@ -208,48 +128,51 @@ export default function Portfolio() {
 
               <div className="space-y-4">
                 {/* Stock Info */}
-                <div className="flex items-center gap-3 p-4 rounded-lg bg-accent/50">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
-                    <span className="text-[14px] font-bold text-primary">
-                      {selectedOrder.stockCode.substring(0, 2)}
-                    </span>
+                <Link
+                  href={`${PB_PATH_STOCKS}/${selectedOrder.ticker}?ref=${window.location.href}`}
+                >
+                  <div className="flex items-center gap-3 p-4 rounded-lg bg-accent/50">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                      <span className="text-[14px] font-bold text-primary">
+                        {selectedOrder.ticker.substring(0, 2)}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-[16px] font-semibold text-foreground">
+                        {selectedOrder.ticker}
+                      </p>
+                      <p className="text-[13px] text-muted-foreground">
+                        {selectedOrder.ticker}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[16px] font-semibold text-foreground">
-                      {selectedOrder.stockCode}
-                    </p>
-                    <p className="text-[13px] text-muted-foreground">
-                      {selectedOrder.stockName}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Status */}
-                <div>
-                  <p className="text-[12px] text-muted-foreground mb-1">
-                    Status
-                  </p>
-                  <Badge
-                    variant={
-                      selectedOrder.status === "Active"
-                        ? "success"
-                        : selectedOrder.status === "Completed"
-                        ? "info"
-                        : "warning"
-                    }
-                  >
-                    {selectedOrder.status}
-                  </Badge>
-                </div>
+                </Link>
 
                 {/* Details */}
-                <div className="space-y-3 pt-3 border-t border-border">
+                <div className="space-y-3 pt-3">
+                  <div>
+                    <p className="text-[12px] text-muted-foreground mb-1">
+                      Status
+                    </p>
+                    <Badge
+                      variant={
+                        selectedOrder.status === "Active"
+                          ? "success"
+                          : selectedOrder.status === "Completed"
+                          ? "info"
+                          : "warning"
+                      }
+                    >
+                      {selectedOrder.status}
+                    </Badge>
+                  </div>
+
                   <div>
                     <p className="text-[12px] text-muted-foreground mb-1">
                       Action
                     </p>
                     <p className="text-[14px] font-medium text-foreground">
-                      {selectedOrder.action}
+                      {selectedOrder.order_type}
                     </p>
                   </div>
 
@@ -262,83 +185,50 @@ export default function Portfolio() {
                     </p>
                   </div>
 
-                  {activeTab === "ongoing" ? (
-                    <>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Target Price
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          ${selectedOrder.targetPrice.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Current Price
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          ${selectedOrder.currentPrice.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Target Execution
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          {selectedOrder.targetExecutionTime}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Expiry
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          {selectedOrder.expiry}
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Entry Price
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          ${selectedOrder.entryPrice.toFixed(2)}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Exit Price
-                        </p>
-                        <p className="text-[14px] font-medium text-foreground">
-                          ${selectedOrder.exitPrice.toFixed(2)}
-                        </p>
-                      </div>
-                      <div className="pt-3 border-t border-border">
-                        <p className="text-[12px] text-muted-foreground mb-1">
-                          Realized Gain
-                        </p>
-                        <p
-                          className={`text-[20px] font-bold ${
-                            selectedOrder.realizedGain > 0
-                              ? "text-success"
-                              : "text-destructive"
-                          }`}
-                        >
-                          {selectedOrder.realizedGain > 0 ? "+" : ""}$
-                          {selectedOrder.realizedGain.toFixed(2)}
-                        </p>
-                      </div>
-                    </>
-                  )}
+                  <div>
+                    <p className="text-[12px] text-muted-foreground mb-1">
+                      Target Price
+                    </p>
+                    <p className="text-[14px] font-medium text-foreground">
+                      {formatRupiah(selectedOrder.price, { prefix: false })}
+                    </p>
+                  </div>
 
                   <div>
                     <p className="text-[12px] text-muted-foreground mb-1">
-                      Setup Used
+                      Amount
                     </p>
-                    <Badge variant="secondary">{selectedOrder.setupUsed}</Badge>
+                    <p className="text-[14px] font-medium text-foreground">
+                      {formatRupiah(
+                        selectedOrder.lot * 100 * selectedOrder.price
+                      )}
+                    </p>
                   </div>
+
+                  <div>
+                    <p className="text-[12px] text-muted-foreground mb-1">
+                      Expiry
+                    </p>
+                    <p className="text-[14px] font-medium text-foreground">
+                      {format(selectedOrder.expiry, "dd MMM yyyy")}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[12px] text-muted-foreground mb-1">
+                      Broker
+                    </p>
+                    <p className="text-[14px] font-medium text-foreground">
+                      ({selectedOrder?.user_broker?.broker?.ticker}){" "}
+                      {selectedOrder?.user_broker?.broker?.name}
+                    </p>
+                  </div>
+
+                  <FloatingActionButton
+                    variant="button-update"
+                    ticker={selectedOrder.ticker}
+                    defaultValue={selectedOrder}
+                  />
                 </div>
               </div>
             </GlassCard>
