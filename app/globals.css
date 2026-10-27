@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
+/*
+  Design tokens StockPlan. Nama token mengikuti shadcn/ui.
+  Sumber: file Figma "StockPlan Design System".
+  Aturan kontras: di atas primary (#FEA722) selalu pakai primary-foreground (gelap),
+  jangan teks putih (kontras sekitar 2:1, di bawah WCAG AA).
+*/
 :root {
+  --radius: 0.5rem;
+
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1c1917;
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+  --primary: #fea722;
+  --primary-foreground: #1c1917;
+  --secondary: #f0fdfa;
+  --secondary-foreground: #134e4a;
+  --muted: #f5f5f4;
+  --muted-foreground: #57534e;
+  --accent: #fff8eb;
+  --accent-foreground: #5e350a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --warning: #fea722;
+  --warning-foreground: #1c1917;
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+  --border: #e7e5e4;
+  --input: #78716c;
+  --ring: #bd6c07;
+  --chart-1: #fea722;
+  --chart-2: #0d9488;
+  --chart-3: #2563eb;
+  --chart-4: #78716c;
+  --chart-5: #8f5109;
+}
+
+.dark {
+  --background: #0c0a09;
+  --foreground: #fafaf9;
+  --card: #1c1917;
+  --card-foreground: #fafaf9;
+  --popover: #1c1917;
+  --popover-foreground: #fafaf9;
+  --primary: #fea722;
+  --primary-foreground: #0c0a09;
+  --secondary: #134e4a;
+  --secondary-foreground: #f0fdfa;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --accent: #292524;
+  --accent-foreground: #fafaf9;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --success: #15803d;
+  --success-foreground: #ffffff;
+  --warning: #fea722;
+  --warning-foreground: #0c0a09;
+  --info: #2563eb;
+  --info-foreground: #ffffff;
+  --border: #292524;
+  --input: #78716c;
+  --ring: #fea722;
+  --chart-1: #fea722;
+  --chart-2: #2dd4bf;
+  --chart-3: #2563eb;
+  --chart-4: #a8a29e;
+  --chart-5: #ffc570;
 }
 
 @theme inline {
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background font-sans text-foreground;
+  }
 }
